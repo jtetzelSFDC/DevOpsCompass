@@ -49,34 +49,46 @@ The foundation architecture has been built and is ready for deployment.
 ### Prerequisites
 
 - Salesforce Developer Edition or Sandbox
-- Salesforce CLI installed
+- Salesforce CLI installed (v2.0+)
 - GitHub Personal Access Token (for future stories)
 
 ### Deployment Steps
 
-1. **Clone or download this project**
+⚠️ **IMPORTANT**: DevOps Compass requires a **two-stage deployment** due to metadata dependencies.
+
+1. **Authenticate to your Salesforce org**
    ```bash
    cd ~/Documents/DevOpsCompass
-   ```
-
-2. **Authenticate to your Salesforce org**
-   ```bash
    sf org login web --set-default --alias devops-compass
    ```
 
-3. **Deploy the metadata**
+2. **Deploy Custom Metadata Types (Stage 1)**
+   ```bash
+   sf project deploy start \
+     --source-dir force-app/main/default/objects/Application_Settings__mdt \
+     --source-dir force-app/main/default/objects/Repository_Config__mdt
+   ```
+
+3. **Deploy all other components (Stage 2)**
    ```bash
    sf project deploy start --manifest manifest/package.xml
    ```
 
-4. **Follow the SETUP.md guide** for:
-   - GitHub authentication setup
-   - Permission set assignment
-   - Custom metadata configuration
+4. **Assign permission set**
+   ```bash
+   sf org assign permset --name DevOps_Compass_Administrator
+   ```
 
-### Complete Setup Guide
+5. **Open and verify**
+   ```bash
+   sf org open --path "/lightning/n/Repository__c"
+   ```
 
-See [SETUP.md](./SETUP.md) for comprehensive deployment and configuration instructions.
+### Complete Deployment Guide
+
+See **[DEPLOY.md](./DEPLOY.md)** for detailed deployment instructions, troubleshooting, and alternative deployment methods.
+
+See **[SETUP.md](./SETUP.md)** for post-deployment configuration (GitHub authentication, custom metadata records).
 
 ## Project Structure
 

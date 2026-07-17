@@ -2,27 +2,36 @@
 
 ## Essential Commands
 
-### Deploy to Trailhead Sandbox
+### Deploy to Salesforce Org (Two-Stage Required)
 ```bash
 cd ~/Documents/DevOpsCompass
+
+# Authenticate
 sf org login web --set-default --alias devops-compass
+
+# Stage 1: Deploy Custom Metadata Types
+sf project deploy start \
+  --source-dir force-app/main/default/objects/Application_Settings__mdt \
+  --source-dir force-app/main/default/objects/Repository_Config__mdt
+
+# Stage 2: Deploy Everything Else
 sf project deploy start --manifest manifest/package.xml
+
+# Assign Permission Set
 sf org assign permset --name DevOps_Compass_Administrator
+
+# Open Org
+sf org open --path "/lightning/n/Repository__c"
 ```
 
-### Open the Sandbox
+### Check Deployment Status
 ```bash
-sf org open
+sf project deploy report --use-most-recent
 ```
 
 ### Run All Tests
 ```bash
 sf apex run test --test-level RunLocalTests --result-format human
-```
-
-### Check Deployment Status
-```bash
-sf project deploy report
 ```
 
 ---
@@ -155,22 +164,30 @@ Default Branch: main
 
 ## Troubleshooting Quick Fixes
 
-### Can't see the app?
+### ❌ "Invalid type: Application_Settings__mdt"
+**Fix**: Deploy custom metadata types FIRST (Stage 1), then everything else (Stage 2)
+```bash
+sf project deploy start \
+  --source-dir force-app/main/default/objects/Application_Settings__mdt \
+  --source-dir force-app/main/default/objects/Repository_Config__mdt
+```
+
+### ❌ Can't see the app?
 ```bash
 sf org assign permset --name DevOps_Compass_Administrator
 ```
 
-### Deployment failed?
+### ❌ Deployment failed?
 ```bash
-sf project deploy report --verbose
+sf project deploy report --use-most-recent --verbose
 ```
 
-### Test coverage too low?
+### ❌ Test coverage too low?
 ```bash
 sf apex run test --test-level RunLocalTests
 ```
 
-### Named Credential not working?
+### ❌ Named Credential not working?
 - Verify token format: `token ghp_xxxxx` (with space)
 - Check token scopes on GitHub
 - Assign External Credential Principal to Permission Set
@@ -266,10 +283,4 @@ After deployment, verify:
 
 ---
 
-**Ready to deploy?**
-
-```bash
-cd ~/Documents/DevOpsCompass && sf org login web
-```
-
-Then follow DEPLOY.md!
+**Ready to deploy?** → See [DEPLOY.md](./DEPLOY.md) for complete two-stage deployment instructions!

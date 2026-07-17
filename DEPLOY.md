@@ -1,190 +1,340 @@
-# Quick Deployment Guide - DevOps Compass
+# Deployment Guide - DevOps Compass
 
-## Ready to Deploy
+## ⚠️ IMPORTANT: Two-Stage Deployment Required
 
-All Story 0 foundation components are complete and ready for deployment to your Trailhead sandbox.
+DevOps Compass **must** be deployed in two stages due to metadata dependencies. Custom Metadata Types must deploy before Apex classes that reference them.
 
 ---
 
-## Option 1: Deploy via Salesforce CLI (Recommended)
+## Prerequisites
 
-### Step 1: Authenticate to your Trailhead sandbox
+1. **Salesforce CLI** installed (v2.0+)
+   ```bash
+   sf --version
+   ```
+
+2. **Developer org or sandbox** with deployment rights
+
+3. **Working directory** at project root:
+   ```bash
+   cd ~/Documents/DevOpsCompass
+   ```
+
+---
+
+## Deployment Process (CLI - Recommended)
+
+### Step 1: Authenticate to Your Org
 
 ```bash
-cd ~/Documents/DevOpsCompass
 sf org login web --set-default --alias devops-compass
 ```
 
-This will open your browser. Log in with your Trailhead playground credentials:
-- **URL**: https://brave-hawk-86tr29-dev-ed.trailblaze.lightning.force.com/
+**For Developer Orgs**: Browser will open automatically - log in with your credentials
 
-### Step 2: Deploy all metadata
+**For Trailhead Playgrounds**: Use a Developer Edition org instead (authentication is simpler)
 
+**Verify Authentication**:
 ```bash
-sf project deploy start --manifest manifest/package.xml
-```
-
-### Step 3: Monitor deployment
-
-```bash
-sf project deploy report
-```
-
-### Step 4: Verify deployment success
-
-```bash
-sf org open --target-org devops-compass
-```
-
-Navigate to **Setup** → **Apex Classes** to verify classes are deployed.
-
----
-
-## Option 2: Deploy via VS Code
-
-1. Open the `DevOpsCompass` folder in VS Code
-2. Open Command Palette (Cmd+Shift+P)
-3. Type: `SFDX: Authorize an Org`
-4. Select **Project Default**
-5. Log in to your Trailhead sandbox
-6. Right-click on `manifest/package.xml`
-7. Select `SFDX: Deploy Source in Manifest to Org`
-
----
-
-## Option 3: Deploy via Workbench
-
-1. Create a ZIP file:
-   ```bash
-   cd ~/Documents/DevOpsCompass
-   zip -r devops-compass.zip force-app/
-   ```
-
-2. Go to https://workbench.developerforce.com
-3. Log in with Trailhead credentials
-4. Navigate to **migration** → **Deploy**
-5. Upload `devops-compass.zip`
-6. Check **Single Package**
-7. Check **Rollback On Error**
-8. Click **Deploy**
-
----
-
-## Post-Deployment Steps
-
-### 1. Assign Permission Set
-
-```bash
-# Get your username
 sf org display --target-org devops-compass
-
-# Assign permission set
-sf org assign permset --name DevOps_Compass_Administrator
 ```
 
-### 2. Verify the App
+---
+
+### Step 2: Deploy Custom Metadata Types (Stage 1)
+
+Deploy the custom metadata type definitions first:
 
 ```bash
-sf org open
+sf project deploy start \
+  --source-dir force-app/main/default/objects/Application_Settings__mdt \
+  --source-dir force-app/main/default/objects/Repository_Config__mdt \
+  --target-org devops-compass
 ```
 
-- Click App Launcher (waffle icon)
-- Search for "DevOps Compass"
-- Verify all tabs appear
+**Expected Output**:
+```
+Status: Succeeded
+Components: 2 deployed
+```
 
-### 3. Configure Custom Metadata
+---
 
-See [SETUP.md](./SETUP.md) Section 4 for:
-- Application Settings configuration
-- Repository Config setup
-- GitHub authentication
+### Step 3: Deploy All Other Components (Stage 2)
+
+Deploy the remaining metadata (Apex classes, custom objects, tabs, etc.):
+
+```bash
+sf project deploy start \
+  --manifest manifest/package.xml \
+  --target-org devops-compass
+```
+
+**Expected Output**:
+```
+Status: Succeeded
+Components: 128 deployed
+Test Errors: 0
+```
+
+**This deploys**:
+- ✅ 16 Apex Classes (11 production + 5 test)
+- ✅ 9 Custom Objects with 100+ fields
+- ✅ 9 Custom Tabs
+- ✅ 2 Permission Sets
+- ✅ 1 Lightning Application
+
+---
+
+### Step 4: Assign Permission Set
+
+```bash
+sf org assign permset \
+  --name DevOps_Compass_Administrator \
+  --target-org devops-compass
+```
+
+---
+
+### Step 5: Open and Verify
+
+```bash
+sf org open --target-org devops-compass --path "/lightning/n/Repository__c"
+```
+
+**Verify in the org**:
+- App Launcher → "DevOps Compass" app appears
+- All 9 tabs are visible (Repository, Pull Request, etc.)
+- Setup → Apex Classes → All 16 classes present
+- Setup → Object Manager → All 9 custom objects exist
+
+---
+
+## Alternative: Deploy via VS Code
+
+### Step 1: Authorize Org
+
+1. Open `DevOpsCompass` folder in VS Code
+2. Command Palette (Cmd+Shift+P or Ctrl+Shift+P)
+3. Type: `SFDX: Authorize an Org`
+4. Select **Production** for Developer orgs
+5. Log in via browser
+
+### Step 2: Deploy Custom Metadata Types
+
+1. Right-click `force-app/main/default/objects/Application_Settings__mdt`
+2. Select `SFDX: Deploy Source to Org`
+3. Repeat for `Repository_Config__mdt`
+
+### Step 3: Deploy Remaining Components
+
+1. Right-click `manifest/package.xml`
+2. Select `SFDX: Deploy Source in Manifest to Org`
+3. Wait for completion
+
+### Step 4: Assign Permission Set
+
+Use Command Palette:
+```
+SFDX: Assign Permission Set to User
+```
+Select: `DevOps_Compass_Administrator`
 
 ---
 
 ## Troubleshooting
 
-### Authentication Issues
+### ❌ "Invalid type: Application_Settings__mdt"
 
-If `sf org login web` fails:
+**Problem**: You tried to deploy everything at once  
+**Solution**: Deploy custom metadata types FIRST (see Step 2 above)
+
+### ❌ "Non-virtual type cannot be extended"
+
+**Problem**: Old codebase, already fixed in current version  
+**Solution**: Make sure you're deploying from the latest git commit:
 ```bash
-# Try specifying the instance URL explicitly
-sf org login web --instance-url https://login.salesforce.com
-
-# Or use device flow
-sf org login device --set-default --alias devops-compass
+git log --oneline -n 5
+# Should show: "Fix: Make DevOpsCompassException virtual..."
 ```
 
-### Deployment Failures
+### ❌ "Identifier name is reserved: number"
+
+**Problem**: Old codebase, already fixed  
+**Solution**: Same as above - deploy from latest commit
+
+### ❌ Authentication timeout or password prompt
+
+**Problem**: Trailhead Playgrounds have limited auth options  
+**Solution**: Use a Developer Edition org instead:
+1. Sign up at: https://developer.salesforce.com/signup
+2. Use the org URL provided in welcome email
+3. Authenticate with `sf org login web`
+
+### ❌ "CustomMetadata was named in package.xml but not found"
+
+**Problem**: Custom metadata types already deployed in Stage 1  
+**Solution**: This is normal - ignore this warning, or remove CustomMetadata section from package.xml (already done in current version)
+
+### Check Deployment Status
 
 ```bash
-# Check for errors
-sf project deploy report --verbose
+# View most recent deployment
+sf project deploy report --use-most-recent --target-org devops-compass
 
-# Validate before deploying
-sf project deploy validate --manifest manifest/package.xml
+# View detailed errors
+sf project deploy report --use-most-recent --target-org devops-compass --verbose
 ```
 
-### Test Failures
+### Validate Before Deploying
 
 ```bash
-# Run all tests
-sf apex run test --test-level RunLocalTests --result-format human
+# Dry-run deployment (no actual changes)
+sf project deploy validate --manifest manifest/package.xml --target-org devops-compass
+```
+
+### Run Tests Manually
+
+```bash
+# Run all local tests
+sf apex run test --test-level RunLocalTests --target-org devops-compass --result-format human
+
+# Run specific test class
+sf apex run test --tests RepositoryServiceTest --target-org devops-compass --result-format human
 ```
 
 ---
 
 ## What Gets Deployed
 
-- ✅ 9 Custom Objects with all fields
-- ✅ 2 Custom Metadata Types
-- ✅ 16 Apex Classes (including 5 test classes)
-- ✅ 2 Permission Sets
-- ✅ 1 Lightning Application
-- ✅ 9 Custom Tabs
+### Stage 1: Custom Metadata Types (2 components)
+- `Application_Settings__mdt` - 7 fields
+- `Repository_Config__mdt` - 6 fields
 
-**Total Components**: ~100 metadata components
+### Stage 2: All Other Components (128 components)
+
+**Apex Classes** (16):
+- Services: `RepositoryService`, `PullRequestService`
+- Selectors: `RepositorySelector`, `PullRequestSelector`
+- Integration: `GitHubApiClient`, `GitHubSyncScheduler`, `GitHubSyncQueueable`
+- Utilities: `DevOpsCompassUtils`, `DevOpsLogger`
+- Exceptions: `DevOpsCompassException`, `GitHubApiException`
+- Test Data: `TestDataFactory`
+- Tests: `RepositoryServiceTest`, `PullRequestServiceTest`, `RepositorySelectorTest`, `DevOpsCompassUtilsTest`
+
+**Custom Objects** (9):
+- `Repository__c` - GitHub repositories
+- `Pull_Request__c` - Pull requests
+- `Contributor__c` - Developers
+- `Work_Item__c` - Jira stories/bugs
+- `Release__c` - Software releases
+- `Deployment__c` - Salesforce deployments
+- `Environment__c` - Org environments
+- `Sync_Job__c` - Integration logs
+- `Metric_Snapshot__c` - DORA metrics
+
+**Lightning Components** (11):
+- 9 Custom Tabs
+- 1 Lightning Application
+- 2 Permission Sets
+
+**Total**: 130 components across both stages
+
+---
+
+## Post-Deployment Checklist
+
+After successful deployment, verify:
+
+- [ ] **Apex Classes**: Setup → Apex Classes → 16 classes visible
+- [ ] **Custom Objects**: Setup → Object Manager → 9 custom objects exist
+- [ ] **DevOps Compass App**: App Launcher → "DevOps Compass" appears
+- [ ] **All Tabs Visible**: Click app → 9 tabs shown (Repository, Pull Request, etc.)
+- [ ] **Permission Set**: Setup → Permission Sets → Both sets exist
+- [ ] **Permission Assigned**: Your user has `DevOps_Compass_Administrator`
+- [ ] **No Errors**: Debug logs show no compilation errors
+- [ ] **Objects Accessible**: Try creating a test Repository record
 
 ---
 
 ## Next Steps After Deployment
 
-1. Follow [SETUP.md](./SETUP.md) for complete configuration
-2. Create GitHub Personal Access Token
-3. Configure Named Credential
-4. Set up External Credential
-5. Configure Application Settings
-6. Add Repository Configurations
+### 1. Configure GitHub Integration
+
+Follow [SETUP.md](./SETUP.md) Section 2:
+- Create GitHub Personal Access Token
+- Set up External Credential in Salesforce
+- Configure Named Credential (`GitHub_API`)
+
+### 2. Add Configuration Records
+
+Create custom metadata records:
+- **Application Settings**: Setup → Custom Metadata Types → Application Settings → Manage Records
+- **Repository Config**: Add repos to sync
+
+### 3. Test the Integration (Story 1)
+
+Story 0 is foundation only - actual sync happens in Story 1.
 
 ---
 
-## Quick Verification Checklist
+## Deployment Timeline
 
-After deployment, verify:
+Based on successful Story 0 deployment:
 
-- [ ] Apex classes appear in Setup → Apex Classes
-- [ ] Custom objects appear in Setup → Object Manager
-- [ ] DevOps Compass app appears in App Launcher
-- [ ] Permission Sets exist (Setup → Permission Sets)
-- [ ] All 9 tabs are visible in the app
-- [ ] No compilation errors in debug logs
+| Stage | Components | Time | Status |
+|-------|-----------|------|--------|
+| Auth | Login to org | ~30s | ✅ |
+| Stage 1 | Custom Metadata Types (2) | ~30s | ✅ |
+| Stage 2 | All other components (128) | ~2min | ✅ |
+| Assign | Permission set | ~10s | ✅ |
+| Verify | Open org and check | ~1min | ✅ |
+| **Total** | **130 components** | **~4min** | ✅ |
 
 ---
 
-## Estimated Deployment Time
+## Common Questions
 
-- **Metadata Deployment**: 2-5 minutes
-- **Test Execution**: 1-2 minutes
-- **Total**: ~5-7 minutes
+### Q: Why two stages?
+
+**A**: Apex classes reference Custom Metadata Types. Salesforce requires the types to exist before classes that use them can compile.
+
+### Q: Can I deploy via Change Sets?
+
+**A**: Yes, but you'll need to manually select 130+ components in the correct order. CLI is much faster.
+
+### Q: What if I already deployed everything together?
+
+**A**: If it worked, great! If you got "Invalid type" errors, follow the two-stage process above.
+
+### Q: Do I need to run tests during deployment?
+
+**A**: No - tests run automatically. All 5 test classes execute during Stage 2 deployment.
+
+### Q: Can I use this in production?
+
+**A**: Yes, but deploy to a sandbox first. Story 0 is foundation only - no data sync happens yet (that's Story 1).
+
+---
+
+## Quick Reference: One-Line Deployment
+
+```bash
+# Complete deployment (requires auth first)
+sf project deploy start --source-dir force-app/main/default/objects/Application_Settings__mdt --source-dir force-app/main/default/objects/Repository_Config__mdt && \
+sf project deploy start --manifest manifest/package.xml && \
+sf org assign permset --name DevOps_Compass_Administrator
+```
 
 ---
 
 ## Need Help?
 
-- Review [SETUP.md](./SETUP.md) for detailed instructions
-- Check [ARCHITECTURE.md](./ARCHITECTURE.md) for technical details
-- Review Salesforce debug logs for errors
-- Verify API version compatibility (62.0)
+- **Setup Instructions**: [SETUP.md](./SETUP.md)
+- **Technical Details**: [ARCHITECTURE.md](./ARCHITECTURE.md)
+- **Deployment Success Summary**: [DEPLOYMENT_SUCCESS.md](./DEPLOYMENT_SUCCESS.md)
+- **Salesforce CLI Docs**: https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/
 
 ---
 
-**Ready to deploy?** Start with Option 1 above!
+**Ready to deploy?** Follow Step 1 above!
