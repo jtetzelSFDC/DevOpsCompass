@@ -8,34 +8,20 @@ DevOps Compass is a Salesforce-native DevOps observability and analytics platfor
 
 Rather than replacing existing DevOps tools such as GitHub, Jira, Copado, or Gearset, DevOps Compass serves as the **Salesforce-native observability and analytics layer** that consolidates information from those systems into a single location for reporting, release visibility, and engineering insights.
 
-## Vision
+## Project Status: Story 0 Complete ✅
 
-Instead of searching through GitHub repositories, Slack conversations, Jira boards, deployment logs, spreadsheets, and release documentation, users can access **one Salesforce application** to understand the current state of their DevOps ecosystem.
+**Story 0: Project Foundation** - COMPLETE & DEPLOYED
 
-### Key Questions Answered
-
-- What is currently deployed?
-- What is waiting to deploy?
-- What changed this week?
-- Which releases are at risk?
-- Which repositories are most active?
-- Which environments contain a specific feature?
-- How are our DORA metrics trending?
-- Where are deployment bottlenecks occurring?
-
-## Project Status: Story 0 Complete
-
-✅ **Story 0: Project Foundation** - COMPLETE
-
-The foundation architecture has been built and is ready for deployment.
+The foundation architecture has been built, tested, and successfully deployed to a Salesforce Developer Edition org.
 
 ### What's Included
 
 - **9 Custom Objects**: Repository, Pull Request, Contributor, Work Item, Release, Deployment, Environment, Sync Job, Metric Snapshot
 - **2 Custom Metadata Types**: Application Settings, Repository Config
-- **16 Apex Classes**: API Client, Services, Selectors, Utilities, Tests
+- **16 Apex Classes**: API Client, Services, Selectors, Utilities, Tests (>85% coverage)
 - **2 Permission Sets**: Administrator and User
-- **1 Lightning Application**: DevOps Compass with navigation tabs
+- **1 Lightning Application**: DevOps Compass with 9 navigation tabs
+- **Complete Documentation**: Setup, deployment, architecture guides
 
 ### What's NOT Included Yet
 
@@ -52,60 +38,61 @@ The foundation architecture has been built and is ready for deployment.
 - Salesforce CLI installed (v2.0+)
 - GitHub Personal Access Token (for future stories)
 
-### Deployment Steps
+### Deployment (Two-Stage Required)
 
 ⚠️ **IMPORTANT**: DevOps Compass requires a **two-stage deployment** due to metadata dependencies.
 
-1. **Authenticate to your Salesforce org**
-   ```bash
-   cd ~/Documents/DevOpsCompass
-   sf org login web --set-default --alias devops-compass
-   ```
+```bash
+cd ~/Documents/DevOpsCompass
 
-2. **Deploy Custom Metadata Types (Stage 1)**
-   ```bash
-   sf project deploy start \
-     --source-dir force-app/main/default/objects/Application_Settings__mdt \
-     --source-dir force-app/main/default/objects/Repository_Config__mdt
-   ```
+# 1. Authenticate
+sf org login web --set-default --alias devops-compass
 
-3. **Deploy all other components (Stage 2)**
-   ```bash
-   sf project deploy start --manifest manifest/package.xml
-   ```
+# 2. Stage 1: Deploy Custom Metadata Types
+sf project deploy start \
+  --source-dir force-app/main/default/objects/Application_Settings__mdt \
+  --source-dir force-app/main/default/objects/Repository_Config__mdt
 
-4. **Assign permission set**
-   ```bash
-   sf org assign permset --name DevOps_Compass_Administrator
-   ```
+# 3. Stage 2: Deploy all other components
+sf project deploy start --manifest manifest/package.xml
 
-5. **Open and verify**
-   ```bash
-   sf org open --path "/lightning/n/Repository__c"
-   ```
+# 4. Assign permission set
+sf org assign permset --name DevOps_Compass_Administrator
 
-### Complete Deployment Guide
+# 5. Open and verify
+sf org open --path "/lightning/n/Repository__c"
+```
 
-See **[DEPLOY.md](./DEPLOY.md)** for detailed deployment instructions, troubleshooting, and alternative deployment methods.
+## Documentation
 
-See **[SETUP.md](./SETUP.md)** for post-deployment configuration (GitHub authentication, custom metadata records).
+All documentation is located in the **[`documentation/`](./documentation/)** folder:
+
+| Document | Purpose |
+|----------|---------|
+| **[DEPLOY.md](./documentation/DEPLOY.md)** | Complete two-stage deployment guide ⭐ |
+| **[SESSION_HANDOFF.md](./documentation/SESSION_HANDOFF.md)** | Current state & Story 1 planning |
+| **[SETUP.md](./documentation/SETUP.md)** | Post-deployment configuration |
+| **[ARCHITECTURE.md](./documentation/ARCHITECTURE.md)** | Technical architecture details |
+| **[QUICK_REFERENCE.md](./documentation/QUICK_REFERENCE.md)** | Command cheat sheet |
+| **[DEPLOYMENT_SUCCESS.md](./documentation/DEPLOYMENT_SUCCESS.md)** | Deployment success summary |
+| **[STORY_0_SUMMARY.md](./documentation/STORY_0_SUMMARY.md)** | Complete Story 0 deliverables |
+| **[DEPLOY_MANUAL.md](./documentation/DEPLOY_MANUAL.md)** | Manual Workbench deployment |
 
 ## Project Structure
 
 ```
 DevOpsCompass/
+├── documentation/          # All documentation files
 ├── force-app/
 │   └── main/
 │       └── default/
 │           ├── applications/     # Lightning App
-│           ├── classes/          # Apex Classes
-│           ├── objects/          # Custom Objects & Fields
-│           ├── permissionsets/   # Permission Sets
-│           └── tabs/             # Custom Tabs
+│           ├── classes/          # 16 Apex Classes
+│           ├── objects/          # 9 Custom Objects + 2 Metadata Types
+│           ├── permissionsets/   # 2 Permission Sets
+│           └── tabs/             # 9 Custom Tabs
 ├── manifest/
 │   └── package.xml              # Deployment manifest
-├── SETUP.md                     # Setup documentation
-├── README.md                    # This file
 └── sfdx-project.json            # SFDX project config
 ```
 
@@ -118,38 +105,14 @@ DevOpsCompass/
 - **API First**: All integrations through abstraction layers
 - **Enterprise Ready**: Bulkified, tested, governor limit aware
 
-## Data Model
-
-### Transactional Objects
-- **Repository__c**: Source code repositories
-- **Pull_Request__c**: Pull requests from GitHub
-- **Deployment__c**: Salesforce deployments
-- **Work_Item__c**: Jira stories/bugs/tasks
-
-### Reference Objects
-- **Environment__c**: Salesforce environments (DEV, QA, UAT, PROD)
-- **Contributor__c**: Developers and contributors
-- **Release__c**: Logical software releases
-
-### Analytics Objects
-- **Metric_Snapshot__c**: Calculated DORA metrics
-- **Sync_Job__c**: Integration execution logs
-
-## Technology Stack
-
-- **Salesforce DX**: Source-driven development
-- **API Version**: 62.0
-- **Apex**: Business logic and integrations
-- **Lightning Web Components**: Future UI enhancements
-- **GitHub REST API**: Primary integration (v3)
-
 ## Roadmap
 
 ### ✅ Story 0: Foundation (COMPLETE)
 - Project structure
-- Data model
-- Apex framework
+- Data model (9 objects, 100+ fields)
+- Apex framework (16 classes)
 - Security model
+- **Status**: Deployed & verified
 
 ### 🔄 Story 1: GitHub Sync (Next)
 - Repository synchronization
@@ -166,19 +129,24 @@ DevOpsCompass/
 - Executive dashboard
 - Engineering metrics
 - Repository insights
-- PR analytics
 
 ### 🚀 Story 4: Deployment Tracking
 - Manual deployment logging
 - CI/CD integration
-- Environment tracking
 - Release management
+
+## Technology Stack
+
+- **Salesforce DX**: Source-driven development
+- **API Version**: 62.0
+- **Apex**: Business logic and integrations
+- **Lightning**: Native UI framework
+- **GitHub REST API**: Primary integration (v3)
 
 ## Testing
 
 All Apex classes include comprehensive test coverage (>85%).
 
-Run tests:
 ```bash
 sf apex run test --test-level RunLocalTests --result-format human
 ```
@@ -194,10 +162,11 @@ This project follows Salesforce Enterprise Design Patterns:
 ## Support
 
 For setup issues or questions:
-- Review [SETUP.md](./SETUP.md)
-- Check Salesforce debug logs
+- Review **[documentation/](./documentation/)** folder
+- Check **[DEPLOY.md](./documentation/DEPLOY.md)** for deployment help
+- Check **[SESSION_HANDOFF.md](./documentation/SESSION_HANDOFF.md)** for current state
+- Review Salesforce debug logs
 - Verify GitHub API connectivity
-- Review governor limit usage
 
 ## License
 
@@ -206,9 +175,10 @@ For setup issues or questions:
 ## Authors
 
 DevOps Compass Team  
-**Date**: July 2026  
-**Version**: 0.1.0 (Foundation)
+**Version**: 0.1.0 (Foundation)  
+**Date**: July 2026
 
 ---
 
-**Note**: This is the foundation release. Business functionality (GitHub sync, metrics, dashboards) will be added in future stories. The platform is ready to receive data and has all necessary architecture in place.
+**GitHub**: https://github.com/jtetzelSFDC/DevOpsCompass  
+**Status**: Story 0 Complete ✅ | Ready for Story 1
