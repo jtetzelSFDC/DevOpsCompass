@@ -172,13 +172,13 @@ public class TestDataFactory {
     /**
      * @description Create mock GitHub PR data
      */
-    public static Map<String, Object> createMockGitHubPRData(Integer number, Integer id, String state) {
+    public static Map<String, Object> createMockGitHubPRData(Integer prNumber, Integer id, String state) {
         Map<String, Object> prData = new Map<String, Object>{
             'id' => id,
-            'number' => number,
-            'title' => 'Test PR ' + number,
+            'number' => prNumber,
+            'title' => 'Test PR ' + prNumber,
             'state' => state.toLowerCase(),
-            'html_url' => 'https://github.com/test/repo/pull/' + number,
+            'html_url' => 'https://github.com/test/repo/pull/' + prNumber,
             'created_at' => '2026-01-01T10:00:00Z',
             'user' => new Map<String, Object>{
                 'login' => 'test-author',
