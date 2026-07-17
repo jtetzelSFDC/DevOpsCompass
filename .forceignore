@@ -1,0 +1,31 @@
+# Salesforce DX project .forceignore file
+
+# Standard files
+**/.eslintrc.json
+**/.prettierrc
+**/jsconfig.json
+**/*.md
+
+# LWC configuration files
+**/.eslintrc.json
+**/package.json
+**/jest.config.js
+
+# LWC tests
+**/__tests__/**
+**/__mocks__/**
+
+# Profiles (use Permission Sets instead)
+**/profiles/**
+
+# Local development
+.localdevserver/**
+.sfdx/**
+.sf/**
+
+# Python scripts
+**/*.py
+**/__pycache__/**
+
+# Logs
+*.log

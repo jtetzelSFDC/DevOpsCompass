@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Release__c</fullName>
+    <label>Release</label>
+    <type>Lookup</type>
+    <referenceTo>Release__c</referenceTo>
+    <relationshipLabel>Releases</relationshipLabel>
+    <relationshipName>Work_Items</relationshipName>
+</CustomField>

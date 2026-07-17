@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_Sync_Status__c</fullName>
+    <label>Last Sync Status</label>
+    <description>Status of the last synchronization attempt</description>
+    <type>Picklist</type>
+    <required>false</required>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Success</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Warning</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Failed</fullName>
+                <default>false</default>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

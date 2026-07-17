@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#0070D2</headerColor>
+        <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
+    </brand>
+    <description>DevOps Compass - Making Salesforce DevOps Visible</description>
+    <formFactors>Small</formFactors>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <label>DevOps Compass</label>
+    <navType>Standard</navType>
+    <tabs>standard-home</tabs>
+    <tabs>Repository__c</tabs>
+    <tabs>Pull_Request__c</tabs>
+    <tabs>Deployment__c</tabs>
+    <tabs>Release__c</tabs>
+    <tabs>Environment__c</tabs>
+    <tabs>Contributor__c</tabs>
+    <tabs>Work_Item__c</tabs>
+    <tabs>Metric_Snapshot__c</tabs>
+    <tabs>Sync_Job__c</tabs>
+    <uiType>Lightning</uiType>
+</CustomApplication>

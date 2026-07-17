@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Repository Configuration</label>
+    <pluralLabel>Repository Configurations</pluralLabel>
+    <visibility>Public</visibility>
+    <description>Configuration for individual GitHub repositories to synchronize</description>
+</CustomObject>
