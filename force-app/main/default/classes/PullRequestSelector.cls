@@ -31,18 +31,25 @@ public with sharing class PullRequestSelector {
      * @return Pull_Request__c
      */
     public static Pull_Request__c getByExternalId(String externalId) {
-        List<Pull_Request__c> prs = [
+        List<Pull_Request__c> prs = getByExternalId(new Set<String>{externalId});
+        return prs.isEmpty() ? null : prs[0];
+    }
+
+    /**
+     * @description Get pull requests by external IDs
+     * @param externalIds Set of external IDs
+     * @return List<Pull_Request__c>
+     */
+    public static List<Pull_Request__c> getByExternalId(Set<String> externalIds) {
+        return [
             SELECT Id, Name, PR_Number__c, External_Id__c, Repository__c,
                    Title__c, Author__c, State__c, Source_Branch__c, Target_Branch__c,
                    Created_Date__c, Closed_Date__c, Merged_Date__c,
                    Review_Count__c, Commit_Count__c, Files_Changed__c,
                    Lines_Added__c, Lines_Removed__c, URL__c
             FROM Pull_Request__c
-            WHERE External_Id__c = :externalId
-            LIMIT 1
+            WHERE External_Id__c IN :externalIds
         ];
-
-        return prs.isEmpty() ? null : prs[0];
     }
 
     /**

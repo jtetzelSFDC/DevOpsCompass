@@ -26,15 +26,32 @@ public with sharing class RepositorySelector {
      * @return Repository__c
      */
     public static Repository__c getByExternalId(String externalId) {
-        List<Repository__c> repos = [
+        List<Repository__c> repos = getByExternalId(new Set<String>{externalId});
+        return repos.isEmpty() ? null : repos[0];
+    }
+
+    /**
+     * @description Get repositories by external IDs
+     * @param externalIds Set of external IDs
+     * @return List<Repository__c>
+     */
+    public static List<Repository__c> getByExternalId(Set<String> externalIds) {
+        return [
             SELECT Id, Name, External_Id__c, Provider__c, Owner__c,
                    Default_Branch__c, Repository_URL__c, Description__c,
                    Active__c, Last_Sync_Date__c, Last_Sync_Status__c
             FROM Repository__c
-            WHERE External_Id__c = :externalId
-            LIMIT 1
+            WHERE External_Id__c IN :externalIds
         ];
+    }
 
+    /**
+     * @description Get repository by ID
+     * @param repositoryId Repository ID
+     * @return Repository__c
+     */
+    public static Repository__c getById(Id repositoryId) {
+        List<Repository__c> repos = getById(new Set<Id>{repositoryId});
         return repos.isEmpty() ? null : repos[0];
     }
 
@@ -43,7 +60,7 @@ public with sharing class RepositorySelector {
      * @param repoIds Set of repository IDs
      * @return List<Repository__c>
      */
-    public static List<Repository__c> getByIds(Set<Id> repoIds) {
+    public static List<Repository__c> getById(Set<Id> repoIds) {
         return [
             SELECT Id, Name, External_Id__c, Provider__c, Owner__c,
                    Default_Branch__c, Repository_URL__c, Description__c,
