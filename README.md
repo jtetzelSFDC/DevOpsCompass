@@ -77,6 +77,7 @@ All documentation is located in the **[`documentation/`](./documentation/)** fol
 | **[DEPLOYMENT_SUCCESS.md](./documentation/DEPLOYMENT_SUCCESS.md)** | Deployment success summary |
 | **[STORY_0_SUMMARY.md](./documentation/STORY_0_SUMMARY.md)** | Complete Story 0 deliverables |
 | **[DEPLOY_MANUAL.md](./documentation/DEPLOY_MANUAL.md)** | Manual Workbench deployment |
+| **[PATSetup.MD](./documentation/PATSetup.MD)** | Story 1 GitHub PAT + Salesforce connection setup |
 
 ## Project Structure
 
