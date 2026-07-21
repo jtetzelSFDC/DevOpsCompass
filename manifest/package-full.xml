@@ -174,10 +174,6 @@
         <name>LightningComponentBundle</name>
     </types>
     <types>
-        <members>Pull_Request__c.All</members>
-        <name>ListView</name>
-    </types>
-    <types>
         <members>DevOps_Compass_Administrator</members>
         <members>DevOps_Compass_User</members>
         <name>PermissionSet</name>
