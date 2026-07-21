@@ -4,6 +4,13 @@
     <hasActivationRequired>false</hasActivationRequired>
     <label>DevOps Compass Administrator</label>
 
+    <!-- App Visibility -->
+    <applicationVisibilities>
+        <application>DevOps_Compass</application>
+        <default>false</default>
+        <visible>true</visible>
+    </applicationVisibilities>
+
     <!-- Object Permissions -->
     <objectPermissions>
         <allowCreate>true</allowCreate>
