@@ -121,4 +121,27 @@ public with sharing class PullRequestService {
         }
         return str.length() > maxLength ? str.substring(0, maxLength) : str;
     }
+
+    /**
+     * @description Get open pull requests (for LWC)
+     * @param repositoryId Optional repository ID filter
+     * @return List<Pull_Request__c>
+     */
+    @AuraEnabled(cacheable=true)
+    public static List<Pull_Request__c> getOpenPullRequests(Id repositoryId) {
+        return PullRequestSelector.getOpenPullRequests(repositoryId);
+    }
+
+    /**
+     * @description Get recently merged pull requests (for LWC)
+     * @param repositoryId Optional repository ID filter
+     * @param days Number of days to look back
+     * @return List<Pull_Request__c>
+     */
+    @AuraEnabled(cacheable=true)
+    public static List<Pull_Request__c> getRecentlyMergedPullRequests(Id repositoryId, Integer days) {
+        Date startDate = Date.today().addDays(-days);
+        Date endDate = Date.today();
+        return PullRequestSelector.getMergedInDateRange(startDate, endDate);
+    }
 }

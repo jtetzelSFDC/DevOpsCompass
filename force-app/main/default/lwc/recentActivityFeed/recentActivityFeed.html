@@ -1,0 +1,52 @@
+<template>
+    <lightning-card title="Recent Activity" icon-name="custom:custom85">
+        <template if:true={hasActivities}>
+            <div class="slds-p-around_medium">
+                <ul class="slds-timeline">
+                    <template for:each={activities} for:item="activity">
+                        <li key={activity.id}>
+                            <div class="slds-timeline__item_expandable slds-timeline__item_call">
+                                <span class="slds-assistive-text">Activity</span>
+                                <div class="slds-media">
+                                    <div class="slds-media__figure">
+                                        <lightning-icon icon-name={activity.icon} size="small"></lightning-icon>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <div class="slds-grid slds-grid_align-spread slds-timeline__trigger">
+                                            <div class="slds-grid slds-grid_vertical-align-center slds-truncate_container_75">
+                                                <h3 class="slds-truncate" title={activity.title}>
+                                                    <template if:true={activity.activityUrl}>
+                                                        <a href={activity.activityUrl}>{activity.title}</a>
+                                                    </template>
+                                                    <template if:false={activity.activityUrl}>
+                                                        <strong>{activity.title}</strong>
+                                                    </template>
+                                                </h3>
+                                            </div>
+                                            <div class="slds-timeline__actions slds-timeline__actions_inline">
+                                                <p class="slds-timeline__date">{activity.formattedDate}</p>
+                                            </div>
+                                        </div>
+                                        <p class="slds-m-top_x-small">{activity.description}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+        </template>
+
+        <template if:false={hasActivities}>
+            <div class="slds-p-around_medium slds-text-align_center">
+                <p class="slds-text-color_weak">No recent activity</p>
+            </div>
+        </template>
+
+        <template if:true={error}>
+            <div class="slds-p-around_medium">
+                <p class="slds-text-color_error">Error loading activity</p>
+            </div>
+        </template>
+    </lightning-card>
+</template>

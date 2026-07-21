@@ -1,0 +1,64 @@
+<template>
+    <lightning-card title="Top Contributors" icon-name="custom:custom19">
+        <template if:true={hasContributors}>
+            <div class="slds-p-around_medium">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="" scope="col" style="width: 3.25rem;">
+                                <div class="slds-truncate" title="Rank">Rank</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Contributor">Contributor</div>
+                            </th>
+                            <th class="slds-text-align_right" scope="col">
+                                <div class="slds-truncate" title="Contributions">Contributions</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={contributors} for:item="contributor">
+                            <tr key={contributor.Id} class="slds-hint-parent">
+                                <td data-label="Rank">
+                                    <div class="slds-truncate" title={contributor.rank}>
+                                        <strong>#{contributor.rank}</strong>
+                                    </div>
+                                </td>
+                                <td data-label="Contributor">
+                                    <div class="slds-grid slds-grid_vertical-align-center">
+                                        <lightning-avatar
+                                            size="small"
+                                            initials={contributor.avatarInitials}
+                                            fallback-icon-name="standard:avatar"
+                                            class="slds-m-right_small">
+                                        </lightning-avatar>
+                                        <a href={contributor.profileUrl}>
+                                            {contributor.GitHub_Username__c}
+                                        </a>
+                                    </div>
+                                </td>
+                                <td data-label="Contributions" class="slds-text-align_right">
+                                    <div class="slds-truncate" title={contributor.Contribution_Count__c}>
+                                        {contributor.Contribution_Count__c}
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+
+        <template if:false={hasContributors}>
+            <div class="slds-p-around_medium slds-text-align_center">
+                <p class="slds-text-color_weak">No contributor data available</p>
+            </div>
+        </template>
+
+        <template if:true={error}>
+            <div class="slds-p-around_medium">
+                <p class="slds-text-color_error">Error loading contributors</p>
+            </div>
+        </template>
+    </lightning-card>
+</template>

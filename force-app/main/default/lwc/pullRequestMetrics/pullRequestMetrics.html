@@ -1,0 +1,105 @@
+<template>
+    <lightning-card title="Pull Request Metrics" icon-name="custom:custom88">
+        <template if:false={isLoading}>
+            <div class="slds-p-around_medium">
+                <!-- Metrics Summary -->
+                <div class="slds-grid slds-gutters slds-wrap slds-m-bottom_large">
+                    <div class="slds-col slds-size_1-of-2">
+                        <article class="slds-tile slds-tile_board slds-card">
+                            <div class="slds-tile__detail">
+                                <p class="slds-text-heading_large slds-m-bottom_xx-small">{openPRCount}</p>
+                                <p class="slds-text-body_small slds-text-color_weak">Open Pull Requests</p>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <article class="slds-tile slds-tile_board slds-card">
+                            <div class="slds-tile__detail">
+                                <p class="slds-text-heading_large slds-m-bottom_xx-small">{mergedPRCount}</p>
+                                <p class="slds-text-body_small slds-text-color_weak">Merged (Last 30 Days)</p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <!-- Open PRs List -->
+                <template if:true={hasOpenPRs}>
+                    <div class="slds-m-bottom_large">
+                        <h3 class="slds-text-heading_small slds-m-bottom_small">Recent Open PRs</h3>
+                        <ul class="slds-list_vertical slds-has-dividers_top-space">
+                            <template for:each={openPRList} for:item="pr">
+                                <li key={pr.Id} class="slds-list__item">
+                                    <div class="slds-grid slds-wrap">
+                                        <div class="slds-col slds-size_3-of-4">
+                                            <a href={pr.url} class="slds-text-body_regular">
+                                                {pr.Title__c}
+                                            </a>
+                                            <p class="slds-text-body_small slds-text-color_weak">
+                                                #{pr.PR_Number__c} by {pr.Author__c} • {pr.createdDateFormatted}
+                                            </p>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-4 slds-text-align_right">
+                                            <span class="slds-badge slds-badge_lightest">Open</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+
+                <!-- Merged PRs List -->
+                <template if:true={hasMergedPRs}>
+                    <div>
+                        <h3 class="slds-text-heading_small slds-m-bottom_small">Recently Merged PRs</h3>
+                        <ul class="slds-list_vertical slds-has-dividers_top-space">
+                            <template for:each={mergedPRList} for:item="pr">
+                                <li key={pr.Id} class="slds-list__item">
+                                    <div class="slds-grid slds-wrap">
+                                        <div class="slds-col slds-size_3-of-4">
+                                            <a href={pr.url} class="slds-text-body_regular">
+                                                {pr.Title__c}
+                                            </a>
+                                            <p class="slds-text-body_small slds-text-color_weak">
+                                                #{pr.PR_Number__c} by {pr.Author__c} • {pr.mergedDateFormatted}
+                                            </p>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-4 slds-text-align_right">
+                                            <span class="slds-badge slds-badge_success">Merged</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+
+                <!-- Empty State -->
+                <template if:false={hasOpenPRs}>
+                    <template if:false={hasMergedPRs}>
+                        <div class="slds-text-align_center slds-p-vertical_large">
+                            <p class="slds-text-color_weak">No pull request data available</p>
+                            <p class="slds-text-body_small slds-text-color_weak slds-m-top_small">
+                                Sync your repository to see pull request metrics
+                            </p>
+                        </div>
+                    </template>
+                </template>
+            </div>
+        </template>
+
+        <!-- Loading State -->
+        <template if:true={isLoading}>
+            <div class="slds-p-around_medium slds-text-align_center">
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Error State -->
+        <template if:true={error}>
+            <div class="slds-p-around_medium">
+                <p class="slds-text-color_error">Error loading pull request data</p>
+            </div>
+        </template>
+    </lightning-card>
+</template>
