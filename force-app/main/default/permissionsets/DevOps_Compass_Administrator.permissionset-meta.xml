@@ -7,7 +7,6 @@
     <!-- App Visibility -->
     <applicationVisibilities>
         <application>DevOps_Compass</application>
-        <default>false</default>
         <visible>true</visible>
     </applicationVisibilities>
 
