@@ -8,11 +8,11 @@ DevOps Compass is a Salesforce-native DevOps observability and analytics platfor
 
 Rather than replacing existing DevOps tools such as GitHub, Jira, Copado, or Gearset, DevOps Compass serves as the **Salesforce-native observability and analytics layer** that consolidates information from those systems into a single location for reporting, release visibility, and engineering insights.
 
-## Project Status: Story 1 Complete ✅
+## Project Status: Story 2 Complete ✅
 
-**Story 1: Repository Intelligence Dashboard** - COMPLETE & DEPLOYED
+**Story 2: Pull Request Milestone Timeline** - COMPLETE & DEPLOYED
 
-Story 1 builds on the foundation with GitHub synchronization services and Lightning Web Components for repository intelligence.
+Story 2 adds deployment pipeline visualization with a reusable Lightning Web Component that tracks PR lifecycle progression.
 
 ### What's Included
 
@@ -31,12 +31,21 @@ Story 1 builds on the foundation with GitHub synchronization services and Lightn
   - **External ID Fields**: For upsert operations across all synced objects
   - **22 Apex Classes Total**: >85% test coverage
 
+- **Deployment Timeline (Story 2)**:
+  - **TimelineBuilder.cls**: Milestone construction logic with fluent API
+  - **DeploymentTimelineService.cls**: Orchestration layer with 3 SOQL queries
+  - **deploymentMilestoneTimeline LWC**: Vertical timeline component with SLDS styling
+  - **Display_Order__c field**: Dynamic environment ordering on Environment__c
+  - **100% test coverage**: TimelineBuilderTest and DeploymentTimelineServiceTest
+  - **Dynamic milestone tracking**: Created, Merged, and environment deployments
+  - **Current milestone highlighting**: Highest completed milestone logic
+
 ### What's NOT Included Yet
 
 - Scheduled GitHub synchronization jobs (Story 1 continuation)
-- DORA metrics calculation (Story 3)
-- Dashboards and reports (Story 4+)
-- Deployment tracking workflows (Story 5+)
+- Deployment event tracking and notifications (Story 3)
+- DORA metrics calculation (Story 4)
+- Dashboards and reports (Story 5+)
 
 ## Quick Start
 
@@ -71,9 +80,9 @@ sf org assign permset --name DevOps_Compass_Administrator
 sf org open --path "/lightning/n/Repository__c"
 ```
 
-### Story 1: Testing GitHub Sync
+### Testing GitHub Sync (Story 1)
 
-After deploying Story 1 components and setting up your GitHub Personal Access Token (see [PATSetup.MD](./documentation/PATSetup.MD)), test the sync:
+After deploying and setting up your GitHub Personal Access Token (see [PATSetup.MD](./documentation/PATSetup.MD)), test the sync:
 
 ```apex
 // Execute Anonymous Apex
@@ -82,22 +91,37 @@ RepositorySyncService.syncRepository('jtetzelSFDC', 'DevOpsCompass');
 
 Navigate to the Repository record page and add the Story 1 Lightning Web Components to see your synced data.
 
+### Testing Deployment Timeline (Story 2)
+
+1. Create Environment records with Display_Order__c values (QA=10, UAT=20, Production=30)
+2. Create Deployment records linked to Pull Requests
+3. Add the `deploymentMilestoneTimeline` component to Pull Request record pages
+4. Verify milestone progression from Created → Merged → Environment deployments
+
 ## Documentation
 
 All documentation is located in the **[`documentation/`](./documentation/)** folder:
 
+### Core Guides
 | Document | Purpose |
 |----------|---------|
 | **[DEPLOY.md](./documentation/DEPLOY.md)** | Complete two-stage deployment guide ⭐ |
-| **[SESSION_HANDOFF.md](./documentation/SESSION_HANDOFF.md)** | Current state & Story 1 planning |
 | **[SETUP.md](./documentation/SETUP.md)** | Post-deployment configuration |
 | **[ARCHITECTURE.md](./documentation/ARCHITECTURE.md)** | Technical architecture details |
+| **[PATSetup.MD](./documentation/PATSetup.MD)** | GitHub PAT + Salesforce connection setup ⭐ |
+
+### Story Summaries
+| Document | Purpose |
+|----------|---------|
+| **[STORY_0_SUMMARY.md](./documentation/STORY_0_SUMMARY.md)** | Foundation deliverables |
+| **[Story1_Completion_Summary.md](./documentation/Story1_Completion_Summary.md)** | GitHub sync implementation |
+| **[Story2_Completion_Summary.md](./documentation/Story2_Completion_Summary.md)** | Deployment timeline implementation ⭐ |
+
+### Reference
+| Document | Purpose |
+|----------|---------|
 | **[QUICK_REFERENCE.md](./documentation/QUICK_REFERENCE.md)** | Command cheat sheet |
-| **[DEPLOYMENT_SUCCESS.md](./documentation/DEPLOYMENT_SUCCESS.md)** | Deployment success summary |
-| **[STORY_0_SUMMARY.md](./documentation/STORY_0_SUMMARY.md)** | Complete Story 0 deliverables |
-| **[Story1_Completion_Summary.md](./documentation/Story1_Completion_Summary.md)** | Story 1 implementation details ⭐ |
-| **[DEPLOY_MANUAL.md](./documentation/DEPLOY_MANUAL.md)** | Manual Workbench deployment |
-| **[PATSetup.MD](./documentation/PATSetup.MD)** | GitHub PAT + Salesforce connection setup |
+| **[DEPLOY_MANUAL.md](./documentation/DEPLOY_MANUAL.md)** | Manual Workbench deployment fallback |
 
 ## Project Structure
 
@@ -108,11 +132,12 @@ DevOpsCompass/
 │   └── main/
 │       └── default/
 │           ├── applications/     # Lightning App
-│           ├── classes/          # 22 Apex Classes
-│           ├── lwc/              # 4 Lightning Web Components (Story 1)
+│           ├── classes/          # 28 Apex Classes (Story 0-2)
+│           ├── lwc/              # 5 Lightning Web Components (Story 1-2)
 │           ├── objects/          # 9 Custom Objects + 2 Metadata Types
 │           ├── permissionsets/   # 2 Permission Sets
 │           └── tabs/             # 9 Custom Tabs
+├── testScripts/           # Testing scripts and guides
 ├── manifest/
 │   └── package.xml              # Deployment manifest
 └── sfdx-project.json            # SFDX project config
@@ -142,21 +167,33 @@ DevOpsCompass/
 - Contributor sync ✅
 - Lightning Web Components ✅
 - Scheduled jobs (Future)
+- **Status**: Deployed & tested
 
-### 📋 Story 2: Analytics Engine
-- DORA metrics calculation
-- Metric snapshots
-- Trend analysis
+### ✅ Story 2: Deployment Timeline (COMPLETE)
+- Pull Request milestone timeline ✅
+- Dynamic environment ordering ✅
+- TimelineBuilder pattern ✅
+- SLDS-native component ✅
+- 100% test coverage ✅
+- **Status**: Deployed & merged to main
 
-### 📊 Story 3: Dashboards
+### 📋 Story 3: Deployment Events & Notifications
+- Deployment event tracking
+- Status change notifications
+- Rollback handling
+- Deployment logs
+
+### 📋 Story 4: DORA Metrics
+- Lead time calculation
+- Deployment frequency
+- Change failure rate
+- Time to restore
+
+### 📊 Story 5: Dashboards & Reports
 - Executive dashboard
 - Engineering metrics
 - Repository insights
-
-### 🚀 Story 4: Deployment Tracking
-- Manual deployment logging
-- CI/CD integration
-- Release management
+- Custom reports
 
 ## Technology Stack
 
@@ -187,7 +224,7 @@ This project follows Salesforce Enterprise Design Patterns:
 For setup issues or questions:
 - Review **[documentation/](./documentation/)** folder
 - Check **[DEPLOY.md](./documentation/DEPLOY.md)** for deployment help
-- Check **[Story1_Completion_Summary.md](./documentation/Story1_Completion_Summary.md)** for Story 1 details
+- Check story completion summaries for implementation details
 - Review Salesforce debug logs
 - Verify GitHub API connectivity
 
@@ -198,10 +235,10 @@ For setup issues or questions:
 ## Authors
 
 DevOps Compass Team  
-**Version**: 0.2.0 (Story 1 Complete)  
+**Version**: 0.3.0 (Story 2 Complete)  
 **Date**: July 2026
 
 ---
 
 **GitHub**: https://github.com/jtetzelSFDC/DevOpsCompass  
-**Status**: Story 1 Complete ✅ | GitHub Sync & Dashboard Operational
+**Status**: Story 2 Complete ✅ | GitHub Sync & Deployment Timeline Operational
