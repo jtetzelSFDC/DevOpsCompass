@@ -94,13 +94,16 @@ private class DeploymentTimelineServiceTest {
         Pull_Request__c pr = [SELECT Id FROM Pull_Request__c LIMIT 1];
         Environment__c qa = [SELECT Id FROM Environment__c WHERE Name = 'QA' LIMIT 1];
 
+        DateTime oldEndTime = DateTime.now().addDays(-5);
+        DateTime newEndTime = DateTime.now().addDays(-1);
+
         // Create multiple deployments to QA
         Deployment__c oldDep = new Deployment__c(
             Pull_Request__c = pr.Id,
             Environment__c = qa.Id,
             Status__c = 'Successful',
-            Start_Time__c = System.now().addDays(-5).addHours(-1),
-            End_Time__c = System.now().addDays(-5)
+            Start_Time__c = oldEndTime.addHours(-1),
+            End_Time__c = oldEndTime
         );
         insert oldDep;
 
@@ -108,8 +111,8 @@ private class DeploymentTimelineServiceTest {
             Pull_Request__c = pr.Id,
             Environment__c = qa.Id,
             Status__c = 'Successful',
-            Start_Time__c = System.now().addDays(-1).addHours(-1),
-            End_Time__c = System.now().addDays(-1)
+            Start_Time__c = newEndTime.addHours(-1),
+            End_Time__c = newEndTime
         );
         insert newDep;
 
@@ -131,7 +134,9 @@ private class DeploymentTimelineServiceTest {
 
         // Should use the latest deployment date
         System.assertNotEquals(null, qaMilestone.completedDate);
-        System.assertEquals(newDep.End_Time__c.date(), qaMilestone.completedDate.date());
+        System.assert(qaMilestone.completedDate >= newEndTime.addSeconds(-1) &&
+                      qaMilestone.completedDate <= newEndTime.addSeconds(1),
+                      'Milestone date should match latest deployment within tolerance');
     }
 
     @isTest
