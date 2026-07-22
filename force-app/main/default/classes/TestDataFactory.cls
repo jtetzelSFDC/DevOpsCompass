@@ -29,6 +29,13 @@ public class TestDataFactory {
     }
 
     /**
+     * @description Create test repository (overload with externalId from name)
+     */
+    public static Repository__c createRepository(String externalId, Boolean doInsert) {
+        return createRepository(externalId.split('/')[1], externalId, doInsert);
+    }
+
+    /**
      * @description Create multiple test repositories
      */
     public static List<Repository__c> createRepositories(Integer count, Boolean doInsert) {
@@ -76,6 +83,13 @@ public class TestDataFactory {
     }
 
     /**
+     * @description Create test pull request (overload with default state = Open)
+     */
+    public static Pull_Request__c createPullRequest(Id repositoryId, Integer prNumber, Boolean doInsert) {
+        return createPullRequest(repositoryId, prNumber, 'Open', doInsert);
+    }
+
+    /**
      * @description Create multiple test pull requests
      */
     public static List<Pull_Request__c> createPullRequests(Id repositoryId, Integer count, Boolean doInsert) {
@@ -111,6 +125,24 @@ public class TestDataFactory {
     }
 
     /**
+     * @description Create test environment with display order
+     */
+    public static Environment__c createEnvironment(String name, String envType, Integer displayOrder, Boolean doInsert) {
+        Environment__c env = new Environment__c(
+            Name = name,
+            Environment_Type__c = envType,
+            Display_Order__c = displayOrder,
+            Active__c = true
+        );
+
+        if (doInsert) {
+            insert env;
+        }
+
+        return env;
+    }
+
+    /**
      * @description Create test deployment
      */
     public static Deployment__c createDeployment(Id prId, Id envId, String status, Boolean doInsert) {
@@ -120,7 +152,8 @@ public class TestDataFactory {
             Status__c = status,
             Deployment_Type__c = 'Manual',
             Start_Time__c = Datetime.now().addHours(-1),
-            End_Time__c = Datetime.now()
+            End_Time__c = Datetime.now(),
+            Deployed_Date__c = Datetime.now()
         );
 
         if (doInsert) {
@@ -128,6 +161,15 @@ public class TestDataFactory {
         }
 
         return dep;
+    }
+
+    /**
+     * @description Generate a fake Salesforce ID for testing
+     */
+    public static Id generateFakeId(Schema.SObjectType sObjectType) {
+        String prefix = sObjectType.getDescribe().getKeyPrefix();
+        String fakeId = prefix + '0'.repeat(15 - prefix.length());
+        return Id.valueOf(fakeId);
     }
 
     /**
