@@ -27,7 +27,7 @@ public with sharing class ActivityService {
         Datetime cutoffDate = Datetime.now().addDays(-days);
 
         // Get recent PRs
-        String query = 'SELECT Id, Title__c, State__c, Author__c, Created_Date__c, Merged_Date__c, Closed_Date__c ' +
+        String query = 'SELECT Id, PR_Number__c, Title__c, State__c, Author__c, Created_Date__c, Merged_Date__c, Closed_Date__c ' +
                       'FROM Pull_Request__c ' +
                       'WHERE (Created_Date__c >= :cutoffDate OR Merged_Date__c >= :cutoffDate OR Closed_Date__c >= :cutoffDate)';
 
