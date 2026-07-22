@@ -1,0 +1,89 @@
+/* Timeline Container */
+.timeline-container {
+    position: relative;
+}
+
+/* Milestone Item */
+.milestone-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.milestone-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Milestone Icon Circle */
+.milestone-icon {
+    position: relative;
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--slds-g-color-neutral-base-95, #f3f2f2);
+    border: 2px solid var(--slds-g-color-border-base-1, #c9c9c9);
+    z-index: 2;
+}
+
+.milestone-icon.completed {
+    background-color: var(--slds-g-color-success-base-50, #2e844a);
+    border-color: var(--slds-g-color-success-base-50, #2e844a);
+}
+
+.milestone-icon.current {
+    background-color: var(--slds-g-color-brand-base-50, #0176d3);
+    border-color: var(--slds-g-color-brand-base-50, #0176d3);
+    box-shadow: 0 0 0 3px var(--slds-g-color-brand-base-10, #d8edff);
+}
+
+/* Milestone Content */
+.milestone-content {
+    flex-grow: 1;
+    margin-left: 1rem;
+    padding-top: 0.125rem;
+}
+
+.milestone-content.current {
+    font-weight: 600;
+}
+
+.milestone-label {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--slds-g-color-neutral-base-10, #181818);
+}
+
+.milestone-date {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: var(--slds-g-color-neutral-base-50, #706e6b);
+    margin-top: 0.125rem;
+}
+
+/* Connecting Line */
+.milestone-line {
+    position: absolute;
+    left: 0.9375rem;
+    top: 2rem;
+    bottom: -1.5rem;
+    width: 2px;
+    background-color: var(--slds-g-color-border-base-1, #c9c9c9);
+    z-index: 1;
+}
+
+.milestone-line.completed {
+    background-color: var(--slds-g-color-success-base-50, #2e844a);
+}
+
+.milestone-line.current {
+    background: linear-gradient(
+        to bottom,
+        var(--slds-g-color-brand-base-50, #0176d3) 0%,
+        var(--slds-g-color-border-base-1, #c9c9c9) 100%
+    );
+}
