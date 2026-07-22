@@ -133,8 +133,8 @@ public with sharing class TimelineBuilder {
             if (deploymentsByEnvironment != null && deploymentsByEnvironment.containsKey(env.Id)) {
                 Deployment__c deployment = deploymentsByEnvironment.get(env.Id);
                 envMilestone.completed = true;
-                envMilestone.completedDate = deployment.Deployed_Date__c;
-                envMilestone.displayDate = formatDate(deployment.Deployed_Date__c);
+                envMilestone.completedDate = deployment.End_Time__c;
+                envMilestone.displayDate = formatDate(deployment.End_Time__c);
             }
 
             milestones.add(envMilestone);

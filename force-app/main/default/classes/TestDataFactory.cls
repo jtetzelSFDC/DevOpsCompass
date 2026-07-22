@@ -152,8 +152,7 @@ public class TestDataFactory {
             Status__c = status,
             Deployment_Type__c = 'Manual',
             Start_Time__c = Datetime.now().addHours(-1),
-            End_Time__c = Datetime.now(),
-            Deployed_Date__c = Datetime.now()
+            End_Time__c = Datetime.now()
         );
 
         if (doInsert) {

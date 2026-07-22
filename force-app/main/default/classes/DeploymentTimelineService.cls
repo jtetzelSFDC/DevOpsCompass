@@ -74,11 +74,11 @@ public with sharing class DeploymentTimelineService {
      */
     private static List<Deployment__c> queryDeployments(Id pullRequestId) {
         return [
-            SELECT Id, Environment__c, Deployed_Date__c, Status__c
+            SELECT Id, Environment__c, End_Time__c, Status__c
             FROM Deployment__c
             WHERE Pull_Request__c = :pullRequestId
               AND Status__c = 'Successful'
-            ORDER BY Deployed_Date__c DESC
+            ORDER BY End_Time__c DESC
         ];
     }
 
@@ -93,7 +93,7 @@ public with sharing class DeploymentTimelineService {
         for (Deployment__c dep : deployments) {
             Id envId = dep.Environment__c;
 
-            // Keep the latest deployment per environment (list is ordered DESC by Deployed_Date__c)
+            // Keep the latest deployment per environment (list is ordered DESC by End_Time__c)
             if (!result.containsKey(envId)) {
                 result.put(envId, dep);
             }

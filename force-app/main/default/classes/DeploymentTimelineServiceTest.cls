@@ -99,7 +99,8 @@ private class DeploymentTimelineServiceTest {
             Pull_Request__c = pr.Id,
             Environment__c = qa.Id,
             Status__c = 'Successful',
-            Deployed_Date__c = System.now().addDays(-5)
+            Start_Time__c = System.now().addDays(-5).addHours(-1),
+            End_Time__c = System.now().addDays(-5)
         );
         insert oldDep;
 
@@ -107,7 +108,8 @@ private class DeploymentTimelineServiceTest {
             Pull_Request__c = pr.Id,
             Environment__c = qa.Id,
             Status__c = 'Successful',
-            Deployed_Date__c = System.now().addDays(-1)
+            Start_Time__c = System.now().addDays(-1).addHours(-1),
+            End_Time__c = System.now().addDays(-1)
         );
         insert newDep;
 
@@ -129,7 +131,7 @@ private class DeploymentTimelineServiceTest {
 
         // Should use the latest deployment date
         System.assertNotEquals(null, qaMilestone.completedDate);
-        System.assertEquals(newDep.Deployed_Date__c.date(), qaMilestone.completedDate.date());
+        System.assertEquals(newDep.End_Time__c.date(), qaMilestone.completedDate.date());
     }
 
     @isTest
@@ -142,7 +144,8 @@ private class DeploymentTimelineServiceTest {
             Pull_Request__c = pr.Id,
             Environment__c = prod.Id,
             Status__c = 'Failed',
-            Deployed_Date__c = System.now()
+            Start_Time__c = System.now().addHours(-1),
+            End_Time__c = System.now()
         );
         insert failedDep;
 
