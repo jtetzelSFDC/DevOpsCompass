@@ -116,15 +116,21 @@ public with sharing class ContributorSyncService {
         String githubUsername = (String) contribData.get('login');
         String externalId = repositoryId + '-' + githubUsername;
 
-        Contributor__c contributor = existingContributors.containsKey(externalId)
-            ? existingContributors.get(externalId)
-            : new Contributor__c();
+        Boolean isNewRecord = !existingContributors.containsKey(externalId);
+        Contributor__c contributor = isNewRecord
+            ? new Contributor__c()
+            : existingContributors.get(externalId);
 
         // Map fields
         contributor.Name = githubUsername;
         contributor.GitHub_Username__c = githubUsername;
         contributor.Contribution_Count__c = (Integer) contribData.get('contributions');
-        contributor.Repository__c = repositoryId;
+
+        // Only set Repository__c for new records (master-detail field cannot be updated)
+        if (isNewRecord) {
+            contributor.Repository__c = repositoryId;
+        }
+
         contributor.External_Id__c = externalId;
         contributor.Profile_URL__c = (String) contribData.get('html_url');
         contributor.Avatar_URL__c = (String) contribData.get('avatar_url');
