@@ -132,11 +132,12 @@ private class DeploymentTimelineServiceTest {
         System.assertNotEquals(null, qaMilestone, 'QA milestone should exist');
         System.assertEquals(true, qaMilestone.completed);
 
-        // Should use the latest deployment date
+        // Should use the latest deployment (not the old one)
+        // Query back the newDep to get exact timestamp stored in DB
+        Deployment__c storedNewDep = [SELECT End_Time__c FROM Deployment__c WHERE Id = :newDep.Id];
         System.assertNotEquals(null, qaMilestone.completedDate);
-        System.assert(qaMilestone.completedDate >= newEndTime.addSeconds(-1) &&
-                      qaMilestone.completedDate <= newEndTime.addSeconds(1),
-                      'Milestone date should match latest deployment within tolerance');
+        System.assertEquals(storedNewDep.End_Time__c, qaMilestone.completedDate,
+                           'Milestone should use latest deployment date');
     }
 
     @isTest
