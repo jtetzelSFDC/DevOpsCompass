@@ -10,4 +10,5 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <sharingModel>ReadWrite</sharingModel>
     <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
 </CustomObject>
