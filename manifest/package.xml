@@ -198,6 +198,7 @@
         <members>pullRequestMetrics</members>
         <members>recentActivityFeed</members>
         <members>repositoryOverviewCard</members>
+        <members>syncAllRepositories</members>
         <name>LightningComponentBundle</name>
     </types>
 

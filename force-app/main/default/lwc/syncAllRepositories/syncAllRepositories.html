@@ -1,0 +1,100 @@
+<template>
+    <lightning-card title="GitHub Sync" icon-name="custom:custom63">
+        <div class="slds-p-around_medium">
+            <!-- Sync Button -->
+            <div class="slds-text-align_center slds-m-bottom_medium">
+                <lightning-button
+                    variant="brand"
+                    label="Sync All Repositories"
+                    onclick={handleSync}
+                    disabled={isLoading}
+                    icon-name="utility:sync"
+                    class="slds-m-bottom_small"
+                ></lightning-button>
+                <p class="slds-text-color_weak slds-m-top_x-small">
+                    Sync all active repositories with GitHub data
+                </p>
+            </div>
+
+            <!-- Loading Spinner -->
+            <template if:true={isLoading}>
+                <div class="slds-text-align_center slds-p-around_large">
+                    <lightning-spinner alternative-text="Syncing..." size="large"></lightning-spinner>
+                    <p class="slds-m-top_medium slds-text-heading_small">
+                        Syncing repositories...
+                    </p>
+                    <p class="slds-text-color_weak">This may take 30-60 seconds</p>
+                </div>
+            </template>
+
+            <!-- Results -->
+            <template if:true={showResults}>
+                <div class="slds-box slds-theme_shade slds-m-top_medium">
+                    <!-- Success Message -->
+                    <template if:true={successMessage}>
+                        <div class="slds-text-align_center">
+                            <lightning-icon
+                                icon-name="utility:success"
+                                variant="success"
+                                size="large"
+                                class="slds-m-bottom_small"
+                            ></lightning-icon>
+                            <h3 class="slds-text-heading_medium slds-text-color_success slds-m-bottom_medium">
+                                Sync Complete!
+                            </h3>
+                        </div>
+                    </template>
+
+                    <!-- Error Message -->
+                    <template if:true={hasError}>
+                        <div class="slds-text-align_center slds-m-bottom_medium">
+                            <lightning-icon
+                                icon-name="utility:warning"
+                                variant="warning"
+                                size="large"
+                                class="slds-m-bottom_small"
+                            ></lightning-icon>
+                            <h3 class="slds-text-heading_medium slds-text-color_warning">
+                                Sync Completed with Errors
+                            </h3>
+                        </div>
+                    </template>
+
+                    <!-- Sync Stats -->
+                    <div class="slds-grid slds-wrap slds-gutters_small">
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                            <div class="stat-box">
+                                <div class="stat-number">{repositoriesSynced}</div>
+                                <div class="stat-label">Repositories</div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                            <div class="stat-box">
+                                <div class="stat-number">{pullRequestsSynced}</div>
+                                <div class="stat-label">Pull Requests</div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                            <div class="stat-box">
+                                <div class="stat-number">{contributorsSynced}</div>
+                                <div class="stat-label">Contributors</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error Details -->
+                    <template if:true={hasError}>
+                        <div class="slds-m-top_medium">
+                            <lightning-textarea
+                                label="Error Details"
+                                value={errorMessage}
+                                readonly
+                                class="error-textarea"
+                            ></lightning-textarea>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>
