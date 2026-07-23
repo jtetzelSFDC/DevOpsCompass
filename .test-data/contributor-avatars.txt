@@ -1,0 +1,5 @@
+TEST DATA: Contributor avatar feature
+This branch contains test commits only - no real functionality
+Will be merged to demonstrate merged PR state
+
+Test commit 2: Avatar styling
