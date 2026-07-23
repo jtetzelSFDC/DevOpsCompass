@@ -9,21 +9,27 @@ public with sharing class GitHubSyncOrchestrator {
      * @description Result class for sync operations
      */
     public class SyncResult {
+        @AuraEnabled
         @InvocableVariable(label='Success' description='Whether the sync completed successfully')
         public Boolean success;
 
+        @AuraEnabled
         @InvocableVariable(label='Repositories Synced' description='Number of repositories synced')
         public Integer repositoriesSynced;
 
+        @AuraEnabled
         @InvocableVariable(label='Pull Requests Synced' description='Number of pull requests synced')
         public Integer pullRequestsSynced;
 
+        @AuraEnabled
         @InvocableVariable(label='Contributors Synced' description='Number of contributors synced')
         public Integer contributorsSynced;
 
+        @AuraEnabled
         @InvocableVariable(label='Error Message' description='Error details if sync failed')
         public String errorMessage;
 
+        @AuraEnabled
         @InvocableVariable(label='Sync Job ID' description='ID of the Sync_Job__c record')
         public String syncJobId;
 
@@ -116,12 +122,52 @@ public with sharing class GitHubSyncOrchestrator {
 
     /**
      * @description Sync all repositories (non-invocable version for scheduled job and LWC)
+     * Uses queueable to avoid DML before callout issues
      * @return SyncResult
      */
     @AuraEnabled
     public static SyncResult syncAllRepositoriesScheduled() {
-        List<SyncResult> results = syncAllRepositories();
-        return results[0];
+        SyncResult result = new SyncResult();
+
+        try {
+            // Create sync job immediately
+            Sync_Job__c syncJob = createSyncJob();
+            result.syncJobId = syncJob.Id;
+
+            // Enqueue the queueable job to perform the actual sync
+            System.enqueueJob(new GitHubSyncQueueable(syncJob.Id));
+
+            result.success = true;
+            result.errorMessage = 'Sync job started. Check the Sync Jobs tab for results.';
+
+        } catch (Exception ex) {
+            result.success = false;
+            result.errorMessage = 'Failed to start sync: ' + ex.getMessage();
+            DevOpsLogger.error('Failed to enqueue sync job', ex);
+        }
+
+        return result;
+    }
+
+    /**
+     * @description Get sync job status for polling
+     * @param syncJobId ID of Sync_Job__c record
+     * @return Sync_Job__c
+     */
+    @AuraEnabled(cacheable=false)
+    public static Sync_Job__c getSyncJobStatus(Id syncJobId) {
+        try {
+            return [
+                SELECT Id, Status__c, Records_Processed__c, Records_Inserted__c,
+                       Records_Updated__c, Error_Log__c, Start_Time__c, End_Time__c
+                FROM Sync_Job__c
+                WHERE Id = :syncJobId
+                LIMIT 1
+            ];
+        } catch (Exception ex) {
+            DevOpsLogger.error('Failed to get sync job status', ex);
+            return null;
+        }
     }
 
     /**

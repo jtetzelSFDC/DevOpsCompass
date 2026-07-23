@@ -82,6 +82,17 @@
                         </div>
                     </div>
 
+                    <!-- Sync Job Link -->
+                    <template if:true={syncJobId}>
+                        <div class="slds-text-align_center slds-m-top_medium">
+                            <lightning-button
+                                label="View Sync Job Details"
+                                onclick={viewSyncJob}
+                                variant="brand-outline"
+                            ></lightning-button>
+                        </div>
+                    </template>
+
                     <!-- Error Details -->
                     <template if:true={hasError}>
                         <div class="slds-m-top_medium">
