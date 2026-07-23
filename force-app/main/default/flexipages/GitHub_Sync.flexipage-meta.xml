@@ -4,6 +4,7 @@
         <itemInstances>
             <componentInstance>
                 <componentName>syncAllRepositories</componentName>
+                <identifier>syncAllRepositories1</identifier>
             </componentInstance>
         </itemInstances>
         <name>main</name>
