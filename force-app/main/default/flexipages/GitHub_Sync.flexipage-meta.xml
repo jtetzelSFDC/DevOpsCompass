@@ -4,10 +4,9 @@
         <itemInstances>
             <componentInstance>
                 <componentName>syncAllRepositories</componentName>
-                <identifier>c_syncAllRepositories</identifier>
             </componentInstance>
         </itemInstances>
-        <name>region1</name>
+        <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
     <masterLabel>GitHub Sync</masterLabel>
