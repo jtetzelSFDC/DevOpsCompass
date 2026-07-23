@@ -10,7 +10,4 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <sharingModel>ReadWrite</sharingModel>
     <enableReports>true</enableReports>
-    <searchLayouts>
-        <listViewButtons>Sync_All_Repositories</listViewButtons>
-    </searchLayouts>
 </CustomObject>
