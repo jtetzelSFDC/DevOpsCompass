@@ -6,7 +6,7 @@
 
 ## 🎯 Required Manual Setup Steps
 
-You need to complete **3 manual steps** to fully activate the auto sync feature:
+You need to complete **1 manual step** to fully activate the auto sync feature:
 
 ### Step 1: Schedule the Nightly Sync Job (REQUIRED)
 
@@ -40,33 +40,7 @@ EOF
 
 ---
 
-### Step 2: Access the Sync Button
-
-**Note:** In Lightning Experience, Flow-based Quick Actions cannot be added as list view buttons via metadata. The Quick Action is deployed and available through the UI.
-
-**Option A: From a Sync Job Record (Recommended)**
-
-1. In your **DevOps Compass** app, go to the **Sync Jobs** tab
-2. Click **New** to create a placeholder Sync Job record (or use any existing record)
-3. At the top of the record page, look for the **Actions** dropdown or the **Sync All Repositories** button
-4. Click it to launch the sync
-
-**Option B: Create a Custom Home Page Component**
-
-If you want easier access, you can:
-1. Add a Quick Action component to your app's home page
-2. Configure it to show the **Sync All Repositories** action
-3. Users can click it without navigating to a Sync Job record
-
-**Option C: Use the App Launcher**
-
-1. Click the App Launcher (waffle icon)
-2. Search for **"Sync All Repositories"**
-3. The Flow may appear in search results
-
----
-
-### Step 3: Test the Manual Sync (RECOMMENDED)
+### Step 2: Test the Manual Sync (RECOMMENDED)
 
 Let's test that everything works!
 
@@ -76,22 +50,19 @@ Let's test that everything works!
 
 **Steps:**
 
-1. Navigate to the **Sync Jobs** tab in your DevOps Compass app
-2. Click the **"Sync All Repositories"** button
-3. You should see an intro screen explaining what will sync
-4. Click **Next**
-5. Wait 30-60 seconds (you'll see a spinner)
-6. Review the results screen:
+1. In your DevOps Compass app, click the **GitHub Sync** tab (second tab after Home)
+2. You'll see the sync component with a big blue **"Sync All Repositories"** button
+3. Click the button
+4. Wait 30-60 seconds (you'll see a loading spinner)
+5. Review the results displayed inline:
    - ✅ Repositories Synced: [count]
    - ✅ Pull Requests Synced: [count]
    - ✅ Contributors Synced: [count]
-   - ✅ "No errors" message (hopefully!)
-7. Click **Finish**
+   - ✅ Success message (or error details if something failed)
 
 **Verify sync worked:**
-1. Stay on the **Sync Jobs** tab
-2. Refresh the page
-3. You should see a new **Sync_Job__c** record at the top:
+1. Click the **Sync Jobs** tab
+2. You should see a new **Sync_Job__c** record at the top:
    - Job Type: **Full Sync**
    - Status: **Completed** (or "Completed with Errors")
    - Records Processed: [total count]
@@ -158,7 +129,8 @@ Use this checklist to confirm everything is set up correctly:
 - [ ] Nightly sync job is scheduled (visible in Setup → Scheduled Jobs)
 - [ ] Scheduled job shows "DevOps Compass Nightly Sync" name
 - [ ] Next run time is 2:00 AM
-- [ ] "Sync All Repositories" button appears on Sync Jobs list view
+- [ ] **GitHub Sync** tab appears in DevOps Compass app (second tab)
+- [ ] Sync component with blue button is visible on GitHub Sync tab
 - [ ] Manual sync button works when clicked
 - [ ] Manual sync creates a Sync_Job__c record
 - [ ] Your user has DevOps Compass Administrator permission set
@@ -169,14 +141,14 @@ Use this checklist to confirm everything is set up correctly:
 
 ## 🐛 Troubleshooting
 
-### Button Not Visible
-**Problem:** Can't see "Sync All Repositories" button on Sync Jobs tab
+### GitHub Sync Tab Not Visible
+**Problem:** Can't see "GitHub Sync" tab in DevOps Compass app
 
 **Solution:**
-1. Verify you completed Step 2 above
-2. Hard refresh the page (Ctrl+Shift+R or Cmd+Shift+R)
-3. Verify you're looking at the Sync Jobs list view (not a record page)
-4. Check that you have the DevOps_Compass_Administrator permission set
+1. Hard refresh the page (Ctrl+Shift+R or Cmd+Shift+R)
+2. Check that you have the DevOps_Compass_Administrator permission set
+3. Verify the tab deployed successfully (check deployment logs)
+4. Try logging out and back in
 
 ---
 
