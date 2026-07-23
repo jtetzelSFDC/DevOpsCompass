@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Manually sync all active GitHub repositories</description>
+    <flowDefinition>GitHub_Sync_All_Repositories</flowDefinition>
+    <label>Sync All Repositories</label>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <type>Flow</type>
+</QuickAction>

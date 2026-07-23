@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <description>Manual sync button for admins to sync all GitHub repositories</description>
+    <label>GitHub Sync All Repositories</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Sync_Intro_Screen</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <screens>
+        <name>Sync_Intro_Screen</name>
+        <label>Sync Intro Screen</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Sync_All_Repositories</targetReference>
+        </connector>
+        <fields>
+            <name>IntroText</name>
+            <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 16px;&quot;&gt;GitHub Repository Sync&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;This will sync all active repositories with the latest data from GitHub:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Repository metadata&lt;/li&gt;&lt;li&gt;Pull requests (open, closed, merged)&lt;/li&gt;&lt;li&gt;Contributors&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Click &lt;b&gt;Next&lt;/b&gt; to start the sync.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Sync_Results_Screen</name>
+        <label>Sync Results Screen</label>
+        <locationX>176</locationX>
+        <locationY>458</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>ResultsText</name>
+            <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 16px;&quot;&gt;Sync Complete&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;Repositories Synced: &lt;/b&gt;{!syncResult.repositoriesSynced}&lt;/p&gt;&lt;p&gt;&lt;b&gt;Pull Requests Synced: &lt;/b&gt;{!syncResult.pullRequestsSynced}&lt;/p&gt;&lt;p&gt;&lt;b&gt;Contributors Synced: &lt;/b&gt;{!syncResult.contributorsSynced}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!ErrorMessageDisplay}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <actionCalls>
+        <name>Sync_All_Repositories</name>
+        <label>Sync All Repositories</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <actionName>GitHubSyncOrchestrator</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Assign_Error_Message</targetReference>
+        </connector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <assignments>
+        <name>Assign_Error_Message</name>
+        <label>Assign Error Message</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <assignmentItems>
+            <assignToReference>syncResult</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Sync_All_Repositories</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>ErrorMessageDisplay</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>ErrorFormula</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Sync_Results_Screen</targetReference>
+        </connector>
+    </assignments>
+    <formulas>
+        <name>ErrorFormula</name>
+        <dataType>String</dataType>
+        <expression>IF(
+    ISBLANK({!syncResult.errorMessage}),
+    &quot;&lt;p style=\&quot;color: green;\&quot;&gt;&lt;b&gt;✓ No errors&lt;/b&gt;&lt;/p&gt;&quot;,
+    &quot;&lt;p style=\&quot;color: red;\&quot;&gt;&lt;b&gt;⚠ Errors:&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&quot; + {!syncResult.errorMessage} + &quot;&lt;/p&gt;&quot;
+)</expression>
+    </formulas>
+    <variables>
+        <name>syncResult</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>GitHubSyncOrchestrator.SyncResult</objectType>
+    </variables>
+    <variables>
+        <name>ErrorMessageDisplay</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

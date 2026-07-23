@@ -21,6 +21,14 @@ public with sharing class RepositorySelector {
     }
 
     /**
+     * @description Get active repositories (alias for getAllActive)
+     * @return List<Repository__c>
+     */
+    public static List<Repository__c> getActiveRepositories() {
+        return getAllActive();
+    }
+
+    /**
      * @description Get repository by external ID
      * @param externalId GitHub repository ID
      * @return Repository__c
