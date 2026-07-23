@@ -45,7 +45,7 @@ public with sharing class GitHubSyncOrchestrator {
                      category='DevOps Compass')
     public static List<SyncResult> syncAllRepositories() {
         SyncResult result = new SyncResult();
-        Sync_Job__c syncJob = createSyncJob();
+        Sync_Job__c syncJob;
 
         try {
             // Get all active repositories
@@ -53,11 +53,13 @@ public with sharing class GitHubSyncOrchestrator {
 
             if (activeRepos.isEmpty()) {
                 result.errorMessage = 'No active repositories found to sync';
+                // Create sync job AFTER checking (no callouts made yet)
+                syncJob = createSyncJob();
                 updateSyncJob(syncJob, result, 'Completed');
                 return new List<SyncResult>{ result };
             }
 
-            // Sync each repository and its data
+            // Sync each repository and its data (CALLOUTS HAPPEN HERE)
             for (Repository__c repo : activeRepos) {
                 try {
                     // Sync repository metadata
@@ -89,6 +91,9 @@ public with sharing class GitHubSyncOrchestrator {
                 }
             }
 
+            // Create sync job AFTER all callouts complete
+            syncJob = createSyncJob();
+
             // Update sync job with results
             String status = String.isBlank(result.errorMessage) ? 'Completed' : 'Completed with Errors';
             updateSyncJob(syncJob, result, status);
@@ -98,6 +103,11 @@ public with sharing class GitHubSyncOrchestrator {
             result.success = false;
             result.errorMessage = 'Sync failed: ' + ex.getMessage();
             DevOpsLogger.error('GitHub sync orchestration failed', ex);
+
+            // Create sync job if it doesn't exist yet
+            if (syncJob == null) {
+                syncJob = createSyncJob();
+            }
             updateSyncJob(syncJob, result, 'Failed');
         }
 
