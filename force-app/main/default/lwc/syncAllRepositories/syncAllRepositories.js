@@ -1,5 +1,5 @@
 import { LightningElement, track } from 'lwc';
-import syncAllRepositories from '@salesforce/apex/GitHubSyncOrchestrator.syncAllRepositories';
+import syncAllRepositoriesScheduled from '@salesforce/apex/GitHubSyncOrchestrator.syncAllRepositoriesScheduled';
 
 export default class SyncAllRepositories extends LightningElement {
     @track isLoading = false;
@@ -16,7 +16,7 @@ export default class SyncAllRepositories extends LightningElement {
         this.hasError = false;
         this.errorMessage = '';
 
-        syncAllRepositories()
+        syncAllRepositoriesScheduled()
             .then(result => {
                 this.repositoriesSynced = result.repositoriesSynced;
                 this.pullRequestsSynced = result.pullRequestsSynced;

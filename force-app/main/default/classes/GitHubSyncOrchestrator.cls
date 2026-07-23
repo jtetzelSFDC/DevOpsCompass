@@ -105,9 +105,10 @@ public with sharing class GitHubSyncOrchestrator {
     }
 
     /**
-     * @description Sync all repositories (non-invocable version for scheduled job)
+     * @description Sync all repositories (non-invocable version for scheduled job and LWC)
      * @return SyncResult
      */
+    @AuraEnabled
     public static SyncResult syncAllRepositoriesScheduled() {
         List<SyncResult> results = syncAllRepositories();
         return results[0];
