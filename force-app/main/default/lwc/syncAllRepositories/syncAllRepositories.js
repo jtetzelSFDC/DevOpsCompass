@@ -10,6 +10,7 @@ export default class SyncAllRepositories extends LightningElement {
     @track hasError = false;
     @track repositoriesSynced = 0;
     @track pullRequestsSynced = 0;
+    @track openPullRequests = 0;
     @track contributorsSynced = 0;
     @track isPolling = false;
     pollInterval;
@@ -69,12 +70,11 @@ export default class SyncAllRepositories extends LightningElement {
                         this.isLoading = false;
                         this.showResults = true;
 
-                        // Parse the records processed
-                        // For now, we'll show total records processed
-                        // In the future, you could add fields to Sync_Job__c to store individual counts
-                        this.repositoriesSynced = job.Records_Inserted__c || 0;
-                        this.pullRequestsSynced = job.Records_Updated__c || 0;
-                        this.contributorsSynced = (job.Records_Processed__c || 0) - this.repositoriesSynced - this.pullRequestsSynced;
+                        // Parse the records processed from individual count fields
+                        this.repositoriesSynced = job.Repositories_Synced__c || 0;
+                        this.pullRequestsSynced = job.Pull_Requests_Synced__c || 0;
+                        this.openPullRequests = job.Open_Pull_Requests__c || 0;
+                        this.contributorsSynced = job.Contributors_Synced__c || 0;
 
                         // Set error info
                         this.hasError = job.Status__c !== 'Completed';

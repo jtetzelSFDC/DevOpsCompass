@@ -62,19 +62,25 @@
 
                     <!-- Sync Stats -->
                     <div class="slds-grid slds-wrap slds-gutters_small">
-                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
                             <div class="stat-box">
                                 <div class="stat-number">{repositoriesSynced}</div>
                                 <div class="stat-label">Repositories</div>
                             </div>
                         </div>
-                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
                             <div class="stat-box">
-                                <div class="stat-number">{pullRequestsSynced}</div>
-                                <div class="stat-label">Pull Requests</div>
+                                <div class="stat-number">{openPullRequests}</div>
+                                <div class="stat-label">Open PRs</div>
                             </div>
                         </div>
-                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
+                            <div class="stat-box">
+                                <div class="stat-number">{pullRequestsSynced}</div>
+                                <div class="stat-label">Total PRs</div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
                             <div class="stat-box">
                                 <div class="stat-number">{contributorsSynced}</div>
                                 <div class="stat-label">Contributors</div>

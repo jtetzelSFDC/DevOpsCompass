@@ -159,7 +159,8 @@ public with sharing class GitHubSyncOrchestrator {
         try {
             return [
                 SELECT Id, Status__c, Records_Processed__c, Records_Inserted__c,
-                       Records_Updated__c, Error_Log__c, Start_Time__c, End_Time__c
+                       Records_Updated__c, Repositories_Synced__c, Pull_Requests_Synced__c,
+                       Open_Pull_Requests__c, Contributors_Synced__c, Error_Log__c, Start_Time__c, End_Time__c
                 FROM Sync_Job__c
                 WHERE Id = :syncJobId
                 LIMIT 1

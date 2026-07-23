@@ -14,6 +14,7 @@ public class GitHubSyncQueueable implements Queueable, Database.AllowsCallouts {
     public void execute(QueueableContext context) {
         Integer repositoriesSynced = 0;
         Integer pullRequestsSynced = 0;
+        Integer openPullRequests = 0;
         Integer contributorsSynced = 0;
         String errorMessage = '';
 
@@ -23,7 +24,7 @@ public class GitHubSyncQueueable implements Queueable, Database.AllowsCallouts {
 
             if (activeRepos.isEmpty()) {
                 errorMessage = 'No active repositories found to sync';
-                updateSyncJob('Completed', 0, errorMessage);
+                updateSyncJob('Completed', 0, 0, 0, 0, 0, errorMessage);
                 return;
             }
 
@@ -83,6 +84,13 @@ public class GitHubSyncQueueable implements Queueable, Database.AllowsCallouts {
                     if (prDataMap.containsKey(repoKey)) {
                         List<Pull_Request__c> prs = upsertPullRequestData(prDataMap.get(repoKey), updatedRepo.Id);
                         pullRequestsSynced += prs.size();
+
+                        // Count open PRs
+                        for (Pull_Request__c pr : prs) {
+                            if (pr.State__c == 'open') {
+                                openPullRequests++;
+                            }
+                        }
                     }
 
                     // Process contributors
@@ -105,12 +113,12 @@ public class GitHubSyncQueueable implements Queueable, Database.AllowsCallouts {
             // Update sync job with results
             String status = String.isBlank(errorMessage) ? 'Completed' : 'Completed with Errors';
             Integer totalRecords = repositoriesSynced + pullRequestsSynced + contributorsSynced;
-            updateSyncJob(status, totalRecords, errorMessage);
+            updateSyncJob(status, totalRecords, repositoriesSynced, pullRequestsSynced, openPullRequests, contributorsSynced, errorMessage);
 
         } catch (Exception ex) {
             errorMessage = 'Sync failed: ' + ex.getMessage();
             DevOpsLogger.error('GitHub sync queueable failed', ex);
-            updateSyncJob('Failed', 0, errorMessage);
+            updateSyncJob('Failed', 0, 0, 0, 0, 0, errorMessage);
         }
     }
 
@@ -212,11 +220,16 @@ public class GitHubSyncQueueable implements Queueable, Database.AllowsCallouts {
         return contributorsToUpsert;
     }
 
-    private void updateSyncJob(String status, Integer recordsProcessed, String errorLog) {
+    private void updateSyncJob(String status, Integer recordsProcessed, Integer repositoriesSynced,
+                               Integer pullRequestsSynced, Integer openPullRequests, Integer contributorsSynced, String errorLog) {
         Sync_Job__c job = [SELECT Id FROM Sync_Job__c WHERE Id = :syncJobId LIMIT 1];
         job.Status__c = status;
         job.End_Time__c = System.now();
         job.Records_Processed__c = recordsProcessed;
+        job.Repositories_Synced__c = repositoriesSynced;
+        job.Pull_Requests_Synced__c = pullRequestsSynced;
+        job.Open_Pull_Requests__c = openPullRequests;
+        job.Contributors_Synced__c = contributorsSynced;
         job.Error_Count__c = String.isBlank(errorLog) ? 0 : 1;
         job.Error_Log__c = errorLog;
         update job;
