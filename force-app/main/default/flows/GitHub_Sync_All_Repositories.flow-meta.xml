@@ -53,7 +53,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>ResultsText</name>
-            <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 16px;&quot;&gt;Sync Complete&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;Repositories Synced: &lt;/b&gt;{!syncResult.repositoriesSynced}&lt;/p&gt;&lt;p&gt;&lt;b&gt;Pull Requests Synced: &lt;/b&gt;{!syncResult.pullRequestsSynced}&lt;/p&gt;&lt;p&gt;&lt;b&gt;Contributors Synced: &lt;/b&gt;{!syncResult.contributorsSynced}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!ErrorMessageDisplay}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 16px;&quot;&gt;Sync Complete&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;Repositories Synced: &lt;/b&gt;{!varRepositoriesSynced}&lt;/p&gt;&lt;p&gt;&lt;b&gt;Pull Requests Synced: &lt;/b&gt;{!varPullRequestsSynced}&lt;/p&gt;&lt;p&gt;&lt;b&gt;Contributors Synced: &lt;/b&gt;{!varContributorsSynced}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!varErrorMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -67,28 +67,42 @@
         <actionName>GitHubSyncOrchestrator</actionName>
         <actionType>apex</actionType>
         <connector>
-            <targetReference>Assign_Error_Message</targetReference>
+            <targetReference>Store_Results</targetReference>
         </connector>
         <flowTransactionModel>Automatic</flowTransactionModel>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <nameSegment>GitHubSyncOrchestrator</nameSegment>
+        <versionSegment>1</versionSegment>
+        <outputParameters>
+            <assignToReference>varRepositoriesSynced</assignToReference>
+            <name>repositoriesSynced</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>varPullRequestsSynced</assignToReference>
+            <name>pullRequestsSynced</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>varContributorsSynced</assignToReference>
+            <name>contributorsSynced</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>varErrorMessage</assignToReference>
+            <name>errorMessage</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>varSuccess</assignToReference>
+            <name>success</name>
+        </outputParameters>
     </actionCalls>
     <assignments>
-        <name>Assign_Error_Message</name>
-        <label>Assign Error Message</label>
+        <name>Store_Results</name>
+        <label>Store Results</label>
         <locationX>176</locationX>
         <locationY>350</locationY>
         <assignmentItems>
-            <assignToReference>syncResult</assignToReference>
+            <assignToReference>varErrorMessage</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Sync_All_Repositories</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>ErrorMessageDisplay</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>ErrorFormula</elementReference>
+                <elementReference>ErrorDisplayFormula</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -96,27 +110,62 @@
         </connector>
     </assignments>
     <formulas>
-        <name>ErrorFormula</name>
+        <name>ErrorDisplayFormula</name>
         <dataType>String</dataType>
         <expression>IF(
-    ISBLANK({!syncResult.errorMessage}),
+    ISBLANK({!varErrorMessage}),
     &quot;&lt;p style=\&quot;color: green;\&quot;&gt;&lt;b&gt;✓ No errors&lt;/b&gt;&lt;/p&gt;&quot;,
-    &quot;&lt;p style=\&quot;color: red;\&quot;&gt;&lt;b&gt;⚠ Errors:&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&quot; + {!syncResult.errorMessage} + &quot;&lt;/p&gt;&quot;
+    &quot;&lt;p style=\&quot;color: red;\&quot;&gt;&lt;b&gt;⚠ Errors:&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&quot; &amp; {!varErrorMessage} &amp; &quot;&lt;/p&gt;&quot;
 )</expression>
     </formulas>
     <variables>
-        <name>syncResult</name>
-        <dataType>SObject</dataType>
+        <name>varRepositoriesSynced</name>
+        <dataType>Number</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
-        <objectType>GitHubSyncOrchestrator.SyncResult</objectType>
+        <scale>0</scale>
+        <value>
+            <numberValue>0.0</numberValue>
+        </value>
     </variables>
     <variables>
-        <name>ErrorMessageDisplay</name>
+        <name>varPullRequestsSynced</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>0</scale>
+        <value>
+            <numberValue>0.0</numberValue>
+        </value>
+    </variables>
+    <variables>
+        <name>varContributorsSynced</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>0</scale>
+        <value>
+            <numberValue>0.0</numberValue>
+        </value>
+    </variables>
+    <variables>
+        <name>varErrorMessage</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>varSuccess</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
     </variables>
 </Flow>

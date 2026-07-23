@@ -13,7 +13,11 @@
         <members>GitHubApiClient</members>
         <members>GitHubApiException</members>
         <members>GitHubApiMock</members>
+        <members>GitHubSyncOrchestrator</members>
+        <members>GitHubSyncOrchestratorTest</members>
         <members>GitHubSyncQueueable</members>
+        <members>GitHubSyncScheduledJob</members>
+        <members>GitHubSyncScheduledJobTest</members>
         <members>GitHubSyncScheduler</members>
         <members>PullRequestSelector</members>
         <members>PullRequestService</members>
@@ -208,6 +212,18 @@
         <members>DevOps_Compass_Administrator</members>
         <members>DevOps_Compass_User</members>
         <name>PermissionSet</name>
+    </types>
+
+    <!-- Flows -->
+    <types>
+        <members>GitHub_Sync_All_Repositories</members>
+        <name>Flow</name>
+    </types>
+
+    <!-- Quick Actions -->
+    <types>
+        <members>Sync_Job__c.Sync_All_Repositories</members>
+        <name>QuickAction</name>
     </types>
 
     <version>62.0</version>
