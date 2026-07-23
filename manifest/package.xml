@@ -177,6 +177,7 @@
         <members>Contributor__c</members>
         <members>Deployment__c</members>
         <members>Environment__c</members>
+        <members>GitHub_Sync</members>
         <members>Metric_Snapshot__c</members>
         <members>Pull_Request__c</members>
         <members>Release__c</members>
@@ -184,6 +185,12 @@
         <members>Sync_Job__c</members>
         <members>Work_Item__c</members>
         <name>CustomTab</name>
+    </types>
+
+    <!-- FlexiPages -->
+    <types>
+        <members>GitHub_Sync</members>
+        <name>FlexiPage</name>
     </types>
 
     <!-- External Credential -->

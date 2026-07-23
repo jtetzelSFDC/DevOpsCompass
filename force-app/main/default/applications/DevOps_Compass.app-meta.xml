@@ -12,6 +12,7 @@
     <label>DevOps Compass</label>
     <navType>Standard</navType>
     <tabs>standard-home</tabs>
+    <tabs>GitHub_Sync</tabs>
     <tabs>Repository__c</tabs>
     <tabs>Pull_Request__c</tabs>
     <tabs>Deployment__c</tabs>
