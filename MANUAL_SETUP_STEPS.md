@@ -40,27 +40,29 @@ EOF
 
 ---
 
-### Step 2: Add the Sync Button to Sync Jobs List View (REQUIRED)
+### Step 2: Access the Sync Button
 
-The "Sync All Repositories" button needs to be manually added to the list view.
+**Note:** In Lightning Experience, Flow-based Quick Actions cannot be added as list view buttons via metadata. The Quick Action is deployed and available through the UI.
 
-**Steps:**
+**Option A: From a Sync Job Record (Recommended)**
 
-1. In your sandbox, go to **Setup**
-2. In Quick Find, type **"Object Manager"**
-3. Click **Sync Job**
-4. In the left sidebar, click **Buttons, Links, and Actions**
-5. You should see **"Sync All Repositories"** in the list (Type: Flow)
-6. Now add it to the list view:
-   - In the left sidebar, click **List View Button Layout**
-   - In the **Available Buttons** list, find **"Sync All Repositories"**
-   - Drag it to the **Selected Buttons** section (top section)
-   - Click **Save**
+1. In your **DevOps Compass** app, go to the **Sync Jobs** tab
+2. Click **New** to create a placeholder Sync Job record (or use any existing record)
+3. At the top of the record page, look for the **Actions** dropdown or the **Sync All Repositories** button
+4. Click it to launch the sync
 
-**Verify it worked:**
-1. Go to your **DevOps Compass** app
-2. Click the **Sync Jobs** tab
-3. You should see the **"Sync All Repositories"** button at the top of the list view
+**Option B: Create a Custom Home Page Component**
+
+If you want easier access, you can:
+1. Add a Quick Action component to your app's home page
+2. Configure it to show the **Sync All Repositories** action
+3. Users can click it without navigating to a Sync Job record
+
+**Option C: Use the App Launcher**
+
+1. Click the App Launcher (waffle icon)
+2. Search for **"Sync All Repositories"**
+3. The Flow may appear in search results
 
 ---
 

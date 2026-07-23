@@ -232,11 +232,5 @@
         <name>ListView</name>
     </types>
 
-    <!-- Custom Buttons (WebLinks) -->
-    <types>
-        <members>Sync_Job__c.Sync_All_Repositories</members>
-        <name>WebLink</name>
-    </types>
-
     <version>62.0</version>
 </Package>
