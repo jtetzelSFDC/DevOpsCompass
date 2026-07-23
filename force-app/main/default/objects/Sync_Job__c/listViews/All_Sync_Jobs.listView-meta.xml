@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Sync_Jobs</fullName>
+    <columns>NAME</columns>
+    <columns>Job_Type__c</columns>
+    <columns>Status__c</columns>
+    <columns>Start_Time__c</columns>
+    <columns>End_Time__c</columns>
+    <columns>Records_Processed__c</columns>
+    <columns>Error_Count__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All Sync Jobs</label>
+    <buttons>Sync_All_Repositories</buttons>
+</ListView>

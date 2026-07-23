@@ -226,5 +226,11 @@
         <name>QuickAction</name>
     </types>
 
+    <!-- List Views -->
+    <types>
+        <members>Sync_Job__c.All_Sync_Jobs</members>
+        <name>ListView</name>
+    </types>
+
     <version>62.0</version>
 </Package>
