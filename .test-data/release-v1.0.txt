@@ -1,3 +1,5 @@
 TEST DATA: Release v1.0.0
 This is a test release branch - no real release
 Demonstrates production deployment workflow
+
+Release notes: Story 1 + Story 2 complete
