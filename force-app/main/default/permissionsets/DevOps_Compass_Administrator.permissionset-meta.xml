@@ -12,6 +12,10 @@
 
     <!-- Tab Visibility -->
     <tabSettings>
+        <tab>GitHub_Sync</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
         <tab>Repository__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
