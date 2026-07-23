@@ -1,0 +1,3 @@
+TEST DATA: Experimental metrics feature (abandoned)
+This branch contains test commits only - no real functionality
+This PR will be closed without merging to demonstrate abandoned work
