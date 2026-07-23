@@ -1,0 +1,5 @@
+TEST DATA: Timeline date formatting bugfix
+This branch contains test commits only - no real functionality
+Will be merged to demonstrate hotfix workflow
+
+Test commit 2: Regression test
